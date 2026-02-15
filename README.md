@@ -1,16 +1,127 @@
-# React + Vite
+# 🚖 Urban Ride
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> A modern full‑stack cab booking / ride management web application built for seamless city travel.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## React Compiler
+* 🔐 User Authentication & Authorization
+* 📍 Location based ride booking
+* 🚗 Real‑time ride status
+* 💳 Secure online payments
+* 🧾 Booking history & trip details
+* 👤 User profile management
+* 📱 Fully responsive design
+* ⚡ Fast and optimized performance
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Frontend
+
+* React.js
+* Tailwind CSS / CSS
+* Redux (if used)
+
+### Backend
+
+* Node.js
+* Express.js
+
+### Database
+
+* MongoDB
+
+### Other Tools & Services
+
+* Firebase / JWT (for authentication)
+* Vercel / Render (for deployment)
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone the repository
+
+```bash
+git clone https://github.com/your-username/urban-ride.git
+```
+
+### 2️⃣ Navigate to project folder
+
+```bash
+cd urban-ride
+```
+
+### 3️⃣ Install dependencies
+
+#### For frontend
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+#### For backend
+
+```bash
+cd server
+npm install
+npm start
+```
+
+---
+
+## 🔑 Environment Variables
+
+Create a `.env` file in the server folder and add:
+
+```
+MONGO_URI=
+JWT_SECRET=
+STRIPE_KEY=
+CLIENT_URL=
+```
+
+---
+
+## 🚀 Deployment
+
+* Frontend → Vercel
+* Backend → Render / Railway
+* Database → MongoDB Atlas
+
+---
+
+## 📈 Future Enhancements
+
+* 🗺️ Google Maps integration
+* 🔔 Real‑time notifications
+* ⭐ Driver & user ratings
+* 📊 Admin dashboard
+* 📱 Mobile app version
+
+---
+
+## 👨‍💻 Author
+
+**Ashish Pimpalshende**
+
+* 💼 Portfolio: *Add link*
+* 🔗 LinkedIn: *Add link*
+* 🐙 GitHub: *Add link*
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.
+
+---
+
+## ⭐ Show Your Support
+
+If you like this project, please ⭐ the repository and share it with others!
