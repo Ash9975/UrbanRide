@@ -1,5 +1,4 @@
 Urban Ride 🚘
-
 A full-stack MERN luxury vehicle rental platform where users can browse premium vehicles, make bookings, and vendors can manage their fleet through a dedicated dashboard.
 
 🌐 Live Demo
