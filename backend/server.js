@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const allowedOrigins = [
-  "https://urbanride-phi.vercel.app",
+  "urbanride-rose.vercel.app",
   "http://localhost:5173",
 ];
 
