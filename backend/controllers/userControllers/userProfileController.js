@@ -1,31 +1,50 @@
 import User from "../../models/userModel.js";
 import { errorHandler } from "../../utils/error.js";
 
-//user profile update
-
 export const editUserProfile = async (req, res, next) => {
   try {
-    const userId = req.params.id;
-    const updatedProfileData = req.body.formData;
+    const userId = req.user; // from JWT
+
+    if (userId !== req.params.id) {
+      return next(errorHandler(403, "You can only edit your profile"));
+    }
+
+    const {
+      username,
+      email,
+      phoneNumber,
+      address,
+    } = req.body;
+
+    const updateData = {};
+
+    if (username) updateData.username = username;
+
+    if (email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser && existingUser._id.toString() !== userId) {
+        return next(errorHandler(400, "Email already in use"));
+      }
+      updateData.email = email;
+    }
+
+    if (phoneNumber) updateData.phoneNumber = phoneNumber;
+    if (address) updateData.address = address;
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      {
-        $set: {
-          username: updatedProfileData.username,
-          email: updatedProfileData.email,
-          phoneNumber: updatedProfileData.phoneNumber,
-          adress: updatedProfileData.adress,
-        },
-      },
+      { $set: updateData },
       { new: true }
     );
 
     if (!updatedUser) {
-      return res.status(409).json({ message: "data not updated", updatedUser });
+      return next(errorHandler(404, "User not found"));
     }
-    const { password, ...rest } = await updatedUser._doc;
-    await res.status(200).json(rest);
+
+    const { password, ...rest } = updatedUser._doc;
+
+    res.status(200).json(rest);
+
   } catch (error) {
     next(error);
   }

@@ -1,250 +1,219 @@
-import { errorHandler } from "../../utils/error.js";
-import vehicle from "../../models/vehicleModel.js";
 
-import { uploader } from "../../utils/cloudinaryConfig.js";
-import { base64Converter } from "../../utils/multer.js";
+import { errorHandler } from "../../utils/error.js";
 import Vehicle from "../../models/vehicleModel.js";
+import { cloudinary } from "../../utils/cloudinaryConfig.js";
+import { base64Converter } from "../../utils/multer.js";
 
 // vendor add vehicle
+
 export const vendorAddVehicle = async (req, res, next) => {
   try {
-    if (!req.body) {
-      return next(errorHandler(500, "body cannot be empty"));
-    }
-    if (!req.files || req.files.length === 0) {
-      return next(errorHandler(500, "image cannot be empty"));
-    }
+    if (!req.body) return next(errorHandler(400, "Body required"));
+    if (!req.files?.length) return next(errorHandler(400, "Images required"));
+
+    const vendorId = req.user.id;
 
     const {
-      registeration_number,
-      company,
-      name,
-      model,
+      registrationNumber,
       title,
-      base_package,
-      price,
-      year_made,
-      fuel_type,
       description,
-      seat,
-      transmition_type,
-      registeration_end_date,
-      insurance_end_date,
-      polution_end_date,
-      car_type,
+      company,
+      model,
+      year,
+      fuelType,
+      transmission,
+      seats,
+      price,
+      basePackage,
       location,
       district,
-      addedBy,
+      carType,
     } = req.body;
 
-    const uploadedImages = [];
+    // Upload images
+    const encodedFiles = base64Converter(req);
 
-    if (req.files) {
-      //converting the buffer to base64
-      const encodedFiles = base64Converter(req);
+    const uploadedImages = await Promise.all(
+      encodedFiles.map(async (file) => {
+        const result = await cloudinary.uploader.upload(file.data, {
+          public_id: file.filename,
+        });
+        return result.secure_url;
+      })
+    );
 
-      try {
-        //mapping over encoded files and uploading to cloudinary
-        await Promise.all(
-          encodedFiles.map(async (cur) => {
-            try {
-              const result = await uploader.upload(cur.data, {
-                public_id: cur.filename,
-              });
-              uploadedImages.push(result.secure_url);
-            } catch (error) {
-              console.log(error, {
-                message: "error while uploading to cloudinary",
-              });
-            }
-          })
-        );
-        try {
-          if (uploadedImages.length > 0) {
-            const addVehicle = new vehicle({
-              registeration_number,
-              company,
-              name,
-              image: uploadedImages,
-              model,
-              car_title: title,
-              car_description: description,
-              base_package,
-              price,
-              year_made,
-              fuel_type,
-              seats: seat,
-              transmition: transmition_type,
-              insurance_end: insurance_end_date,
-              registeration_end: registeration_end_date,
-              pollution_end: polution_end_date,
-              car_type,
-              created_at: Date.now(),
-              location,
-              district,
-              isAdminAdded: "false",
-              addedBy: addedBy,
-              isAdminApproved: false,
-            });
+    const vehicle = await Vehicle.create({
+      registrationNumber,
+      title,
+      description,
+      company,
+      model,
+      year,
+      fuelType,
+      transmission,
+      seats,
+      price,
+      basePackage,
+      images: uploadedImages,
+      location,
+      district,
+      carType,
+      addedBy: vendorId,
+      isAdminAdded: false,
+      isAdminApproved: false,
+      isDeleted: false,
+    });
 
-            await addVehicle.save();
-            res.status(200).json({
-              message: "product added to mb & cloudninary successfully",
-            });
-          }
-        } catch (error) {
-          if (error.code === 11000) {
-            return next(errorHandler(409, "product already exists"));
-          }
+    res.status(201).json(vehicle);
 
-          console.log(error);
-          next(errorHandler(500, "product not uploaded"));
-        }
-      } catch (error) {
-        next(errorHandler(500, "could not upload image to cloudinary"));
-      }
-    }
   } catch (error) {
-    console.log(error)
-    next(errorHandler(400, "vehicle failed to add "));
+    console.log(error);
+    next(errorHandler(500, error.message));
   }
 };
 
-//edit vendorVehicles
-export const vendorEditVehicles = async (req, res, next) => {
+export const vendorEditVehicle = async (req, res, next) => {
   try {
-    //get the id of vehicle to edit through req.params
-    const vehicle_id = req.params.id;
+    const vehicleId = req.params.id;
+    const vendorId = req.user.id;
 
-    if (!vehicle_id) {
-      return next(errorHandler(401, "cannot be empty"));
+    const vehicle = await Vehicle.findById(vehicleId);
+    if (!vehicle) return next(errorHandler(404, "Vehicle not found"));
+
+    if (vehicle.addedBy.toString() !== vendorId) {
+      return next(errorHandler(403, "Not allowed"));
     }
 
-    if (!req.body || !req.body.formData) {
-      return next(errorHandler(404, "Add data to edit first"));
-    }
-
+    // ✅ Only allow valid fields
     const {
-      registeration_number,
-      company,
-      name,
-      model,
+      registrationNumber,
       title,
-      base_package,
-      price,
-      year_made,
       description,
-      Seats,
-      transmitionType,
-      Registeration_end_date,
-      insurance_end_date,
-      polution_end_date,
-      carType,
+      company,
+      model,
+      year,
       fuelType,
-      vehicleLocation,
-      vehicleDistrict,
-    } = req.body.formData;
+      transmission,
+      seats,
+      price,
+      basePackage,
+      location,
+      district,
+      carType,
+    } = req.body;
 
-    try {
-      const edited = await Vehicle.findByIdAndUpdate(
-        vehicle_id,
-        {
-          registeration_number,
-          company,
-          name,
-          model,
-          car_title: title,
-          car_description: description,
-          base_package,
-          price,
-          year_made,
-          fuel_type: fuelType,
-          seats: Seats,
-          transmition: transmitionType,
-          insurance_end: insurance_end_date,
-          registeration_end: Registeration_end_date,
-          pollution_end: polution_end_date,
-          car_type: carType,
-          updated_at: Date.now(),
-          location: vehicleLocation,
-          district: vehicleDistrict,
-          //also resetting adminApproval or rejection when editing data so data request is send again
-          isAdminApproved: false,
-          isRejected: false,
-        },
+    const updateData = {
+      registrationNumber,
+      title,
+      description,
+      company,
+      model,
+      year,
+      fuelType,
+      transmission,
+      seats,
+      price,
+      basePackage,
+      location,
+      district,
+      carType,
+      isAdminApproved: false, // re-approval needed
+      isRejected: false,
+    };
 
-        { new: true }
+    // ✅ Handle image update (optional)
+    if (req.files && req.files.length > 0) {
+      const encodedFiles = base64Converter(req);
+
+      const uploadedImages = await Promise.all(
+        encodedFiles.map(async (file) => {
+          const result = await cloudinary.uploader.upload(file.data, {
+            public_id: file.filename,
+          });
+          return result.secure_url;
+        })
       );
-      if (!edited) {
-        return next(errorHandler(404, "data with this id not found"));
-      }
 
-      res.status(200).json(edited);
-    } catch (error) {
-      if (error.code == 11000 && error.keyPattern && error.keyValue) {
-        const duplicateField = Object.keys(error.keyPattern)[0];
-        const duplicateValue = error.keyValue[duplicateField];
-
-        return next(
-          errorHandler(
-            409,
-            `${duplicateField} '${duplicateValue}' already exists`
-          )
-        );
-      }
+      updateData.images = uploadedImages;
     }
+
+    const updated = await Vehicle.findByIdAndUpdate(
+      vehicleId,
+      { $set: updateData },
+      { new: true }
+    );
+
+    res.status(200).json(updated);
+
   } catch (error) {
     console.log(error);
-    next(errorHandler(500, "something went wrong"));
+    next(errorHandler(500, error.message));
   }
 };
 
 //delete vendor Vehcile soft delete
-export const vendorDeleteVehicles = async (req, res, next) => {
+export const vendorDeleteVehicle = async (req, res, next) => {
   try {
-    const vehicle_id = req.params.id;
-    const softDeleted = await vehicle.findOneAndUpdate(
-      { _id: vehicle_id },
-      { isDeleted: "true" },
-      { new: true }
-    );
-    if (!softDeleted) {
-      next(errorHandler(400, "vehicle not found"));
-      return;
+    const vehicleId = req.params.id;
+    const vendorId = req.user.id;
+
+    const vehicle = await Vehicle.findById(vehicleId);
+    if (!vehicle) return next(errorHandler(404, "Vehicle not found"));
+
+    if (vehicle.addedBy.toString() !== vendorId) {
+      return next(errorHandler(403, "Not allowed"));
     }
-    res.status(200).json({ message: "deleted successfully" });
+
+    if (vehicle.isDeleted) {
+      return next(errorHandler(400, "Vehicle already deleted"));
+    }
+
+    vehicle.isDeleted = true;
+    await vehicle.save();
+
+    res.status(200).json({
+      message: "Vehicle deleted successfully",
+      vehicleId,
+    });
+
   } catch (error) {
     console.log(error);
-    next(errorHandler(500, "error while vendorDeleteVehilces"));
+    next(errorHandler(500, error.message));
   }
 };
 
 //show vendor vehicles
-export const showVendorVehicles = async (req, res, next) => {
+export const showVendorVehicles = async (
+  req,
+  res,
+  next
+) => {
+
+  console.log(
+    "SHOW VENDOR VEHICLES HIT"
+  );
+
   try {
-    if (!req.body) {
-      throw errorHandler(400, "User not found");
-    }
 
-    const { _id } = req.body;
+    const vendorId = req.user.id;
 
-    const vendorsVehicles = await vehicle.aggregate([
-      {
-        $match: {
-          isDeleted: "false",
-          isAdminAdded: false,
-          addedBy: _id,
-        },
-      },
-    ]);
+    console.log(vendorId);
 
-    if (!vendorsVehicles || vendorsVehicles.length === 0) {
-      throw errorHandler(400, "No vehicles found");
-    }
+    const vehicles =
+      await Vehicle.find({
+        addedBy: vendorId,
+        isDeleted: false,
+      });
 
-    res.status(200).json(vendorsVehicles);
+    res.status(200).json(vehicles);
+
   } catch (error) {
-    console.error(error);
-    next(errorHandler(500, "Error in showVendorVehicles"));
+
+    console.log(error);
+
+    next(errorHandler(
+      500,
+      error.message
+    ));
   }
 };

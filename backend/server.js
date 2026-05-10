@@ -7,20 +7,20 @@ import cookieParser from "cookie-parser";
 import userRoute from "./routes/userRoute.js";
 import authRoute from "./routes/authRoute.js";
 import adminRoute from "./routes/adminRoute.js";
-import vendorRoute from "./routes/venderRoute.js";
-import { cloudinaryConfig } from "./utils/cloudinaryConfig.js";
+import vendorRoute from "./routes/vendorRoute.js";
+import "./utils/cloudinaryConfig.js";
 
 dotenv.config({ path: ".env" });
 
 
 const app = express();
 
-/* ---------- MIDDLEWARE ---------- */
+// middleware
 app.use(express.json());
 app.use(cookieParser());
 
 const allowedOrigins = [
-  "https://rent-a-ride-two.vercel.app",
+  // "https://rent-a-ride-two.vercel.app",
   "http://localhost:5173",
 ];
 
@@ -32,12 +32,13 @@ app.use(
   })
 );
 
-app.use(cloudinaryConfig);
-
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
 
 /* ---------- ROUTES ---------- */
-app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/user", userRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/vendor", vendorRoute);
 

@@ -8,16 +8,28 @@ const expireDate = new Date(Date.now() + 3600000);
 
 export const vendorSignup = async (req, res, next) => {
   const { username, email, password } = req.body;
+
   try {
-    const hadshedPassword = bcryptjs.hashSync(password, 10);
-    const user = await User.create({
+    if (!username || !email || !password) {
+      return next(errorHandler(400, "All fields are required"));
+    }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return next(errorHandler(400, "User already exists"));
+    }
+
+    const hashedPassword = bcryptjs.hashSync(password, 10);
+
+    const user = new User({
       username,
-      password: hadshedPassword,
-      email,
-      isVendor: true,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      role: "vendor",
     });
+
     await user.save();
-    res.status(200).json({ message: "vendor created successfully" });
+
+    res.status(201).json({ message: "Vendor registered successfully" });
   } catch (error) {
     next(error);
   }
@@ -25,30 +37,42 @@ export const vendorSignup = async (req, res, next) => {
 
 export const vendorSignin = async (req, res, next) => {
   const { email, password } = req.body;
+
   try {
-    const validVendor = await User.findOne({ email }).lean();
-    if (!validVendor || !validVendor.isVendor) {
-      return next(errorHandler(404, "user not found"))
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user || user.role !== "vendor") {
+      return next(errorHandler(404, "Vendor not found"));
     }
-    const validPassword = bcryptjs.compareSync(password, validVendor.password);
+
+    const validPassword = bcryptjs.compareSync(password, user.password);
     if (!validPassword) {
       return next(errorHandler(401, "Invalid credentials"));
     }
 
-    const token = Jwt.sign({ id: validVendor._id }, process.env.JWT_SECRET);
-    const { password: hadshedPassword, ...rest } = validVendor;
-    const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
+    const accessToken = Jwt.sign(
+      { id: user._id },
+      process.env.ACCESS_TOKEN,
+      { expiresIn: "15m" }
+    );
 
-    res
-    cookie("access_token", token, {
-      httpOnly: true,
-      secure: true,        // only HTTPS
-      sameSite: "strict",
-      maxAge: thirtyDaysInMilliseconds,
-    })
+    const refreshToken = Jwt.sign(
+      { id: user._id },
+      process.env.REFRESH_TOKEN,
+      { expiresIn: "7d" }
+    );
 
-      .status(200)
-      .json(rest);
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    const { password: hashedPassword, ...rest } = user._doc;
+
+    res.status(200).json({
+      ...rest,
+      accessToken,
+      refreshToken,
+    });
+
   } catch (error) {
     next(error);
   }
@@ -56,75 +80,67 @@ export const vendorSignin = async (req, res, next) => {
 
 export const vendorSignout = async (req, res, next) => {
   try {
-    res
-      .clearCookie("access_token")
-      .status(200)
-      .json({ message: "vendor signedout successfully" });
+    await User.findByIdAndUpdate(req.user, {
+      $unset: { refreshToken: "" },
+    });
+
+    res.status(200).json({ message: "Vendor signed out successfully" });
   } catch (error) {
     next(error);
   }
 };
 
-
-//vendor login or signup with google
-
 export const vendorGoogle = async (req, res, next) => {
   try {
-    const user = await User.findOne({ email: req.body.email }).lean();
-    if (user && user.isVendor) {
-      const { password: hashedPassword, ...rest } = user;
-      const token = Jwt.sign(
-        { id: user._id }, 
-        process.env.JWT_SECRET,
-        { expiresIn: "30d" }
-      );
-      
-      res
-        .cookie("access_token", token, {
-          httpOnly: true,
-          expires: expireDate,
-        })
-        .status(200)
-        .json(rest);
-    } else {
+    let user = await User.findOne({ email: req.body.email });
+
+    if (user && user.role !== "vendor") {
+      return next(errorHandler(409, "Email already used as user"));
+    }
+
+    if (!user) {
       const generatedPassword =
         Math.random().toString(36).slice(-8) +
-        Math.random().toString(36).slice(-8); //we are generating a random password since there is no password in result
+        Math.random().toString(36).slice(-8);
+
       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
-      const newUser = new User({
+
+      user = new User({
         profilePicture: req.body.photo,
-        password: hashedPassword,
         username:
           req.body.name.split(" ").join("").toLowerCase() +
-          Math.random().toString(36).slice(-8) +
           Math.random().toString(36).slice(-8),
-        email: req.body.email,
-        isVendor: true,
-        //we cannot set username to req.body.name because other user may also have same name so we generate a random value and concat it to name
-        //36 in toString(36) means random value from 0-9 and a-z
+        email: req.body.email.toLowerCase(),
+        password: hashedPassword,
+        role: "vendor",
       });
-      try {
-        const savedUser = await newUser.save();
-        const userObject = savedUser.toObject();
 
-        const token = Jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
-        const { password: hashedPassword2, ...rest } = userObject;
-        res
-          .cookie("access_token", token, {
-            httpOnly: true,
-            expires: expireDate,
-          })
-          .status(200)
-          .json(rest);
-      }
-      catch (error) {
-        if (error.code === 11000) {
-          return next(errorHandler(409, "email already in use"))
-        }
-        next(error)
-      }
-
+      await user.save();
     }
+
+    const accessToken = Jwt.sign(
+      { id: user._id },
+      process.env.ACCESS_TOKEN,
+      { expiresIn: "15m" }
+    );
+
+    const refreshToken = Jwt.sign(
+      { id: user._id },
+      process.env.REFRESH_TOKEN,
+      { expiresIn: "7d" }
+    );
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    const { password, ...rest } = user._doc;
+
+    res.status(200).json({
+      ...rest,
+      accessToken,
+      refreshToken,
+    });
+
   } catch (error) {
     next(error);
   }

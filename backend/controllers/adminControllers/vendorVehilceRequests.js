@@ -1,84 +1,84 @@
 import Vehicle from "../../models/vehicleModel.js";
+import User from "../../models/userModel.js";
 import { errorHandler } from "../../utils/error.js";
 
-//Vendor vehicle request
-export const fetchVendorVehilceRequests = async (req, res, next) => {
+export const fetchVendorVehicleRequests = async (req, res, next) => {
   try {
-    const vendorRequests = await Vehicle.aggregate([
-      {
-        $match: {
-          isAdminApproved: false,
-          isDeleted: "false",
-          isRejected: false,
-          isAdminAdded: false,
-        },
-      },
-    ]);
+    const requests = await Vehicle.find({
+      isAdminApproved: false,
+      isDeleted: false,
+      isRejected: false,
+      isAdminAdded: false,
+    }).populate("addedBy", "username email");
 
-    if (!vendorRequests) {
-      next(
-        errorHandler(500, "something went wrong while fetching vendor requests")
-      );
-    }
-    if (vendorRequests) {
-      res.status(200).json(vendorRequests);
-    }
+    res.status(200).json({
+      success: true,
+      data: requests || [],
+    });
+
   } catch (error) {
-    console.log(error);
-    next(errorHandler(500, "error while fetchVendorVehicleRequests"));
+    next(errorHandler(500, error.message));
   }
 };
 
 //approve Vendor reqest
-
 export const approveVendorVehicleRequest = async (req, res, next) => {
   try {
-    if (!req.body) {
-      next(errorHandler(409, "no body found bad request"));
+    const { id } = req.params;
+
+    const vehicle = await Vehicle.findById(id);
+
+    if (!vehicle) {
+      return next(errorHandler(404, "Vehicle not found"));
     }
 
-    const { _id } = req.body;
-
-    const approvedVendor = await Vehicle.findByIdAndUpdate(
-      _id,
-      { isAdminApproved: true },
-      {
-        new: true,
-      }
-    );
-
-    if (!approvedVendor) {
-      next(errorHandler(500, "something went wrong while approveing vendor"));
+    if (vehicle.isAdminApproved) {
+      return next(errorHandler(400, "Vehicle already approved"));
     }
 
-    res.status(200).json(approvedVendor);
+    vehicle.isAdminApproved = true;
+    vehicle.isRejected = false;
+
+    await vehicle.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Vehicle approved",
+      data: vehicle,
+    });
+
   } catch (error) {
-    console.log(error);
-    next(errorHandler(500, "error while approveing vendor"));
+    next(errorHandler(500, error.message));
   }
 };
 
-//Regect vendor vehicle
+//Reject vendor vehicle
 export const rejectVendorVehicleRequest = async (req, res, next) => {
   try {
-    if (!req.body) {
-      next(errorHandler(409, "bad request required id"));
-    }
-    const { _id } = req.body;
-    const regectedVendor = await Vehicle.findByIdAndUpdate(
-      _id,
-      { isRejected: true },
-      {
-        new: true,
-      }
-    );
+    const { id } = req.params;
 
-    if (!regectedVendor) {
-      next(errorHandler(500, "something went wrong while regecting vendor"));
+    const vehicle = await Vehicle.findById(id);
+
+    if (!vehicle) {
+      return next(errorHandler(404, "Vehicle not found"));
     }
 
-    res.status(200).json(regectedVendor);
+    if (vehicle.isRejected) {
+      return next(errorHandler(400, "Vehicle already rejected"));
+    }
+
+    vehicle.isRejected = true;
+    vehicle.isAdminApproved = false;
+
+    await vehicle.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Vehicle rejected",
+      data: vehicle,
+    });
+
   } catch (error) {
-    next(errorHandler(500, "error while Rejecting"));
+    next(errorHandler(500, error.message));
   }
 };

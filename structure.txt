@@ -1,0 +1,96 @@
+src/
+│
+├── api/
+│   └── axios.js
+│
+├── assets/
+│
+├── components/
+│   │
+│   ├── common/
+│   │   ├── Navbar.jsx
+│   │   ├── Footer.jsx
+│   │   ├── Loader.jsx
+│   │   ├── ProtectedRoute.jsx
+│   │   └── RoleRoute.jsx
+│   │
+│   ├── user/
+│   │   ├── VehicleCard.jsx
+│   │   ├── BookingCard.jsx
+│   │   └── ProfileCard.jsx
+│   │
+│   ├── vendor/
+│   │   ├── VendorSidebar.jsx
+│   │   ├── VehicleForm.jsx
+│   │   ├── VehicleTable.jsx
+│   │   └── VendorStats.jsx
+│   │
+│   └── admin/
+│       ├── AdminSidebar.jsx
+│       ├── AnalyticsCards.jsx
+│       ├── RequestsTable.jsx
+│       ├── BookingTable.jsx
+│       └── Charts.jsx
+│
+├── layouts/
+│   ├── MainLayout.jsx
+│   ├── UserLayout.jsx
+│   ├── VendorLayout.jsx
+│   └── AdminLayout.jsx
+│
+├── pages/
+│   │
+│   ├── public/
+│   │   ├── Home.jsx
+│   │   ├── Login.jsx
+│   │   ├── Signup.jsx
+│   │   ├── Vehicles.jsx
+│   │   └── VehicleDetails.jsx
+│   │
+│   ├── user/
+│   │   ├── Profile.jsx
+│   │   ├── MyBookings.jsx
+│   │   └── BookingDetails.jsx
+│   │
+│   ├── vendor/
+│   │   ├── Dashboard.jsx
+│   │   ├── AddVehicle.jsx
+│   │   ├── MyVehicles.jsx
+│   │   ├── EditVehicle.jsx
+│   │   └── VendorBookings.jsx
+│   │
+│   └── admin/
+│       ├── Dashboard.jsx
+│       ├── Analytics.jsx
+│       ├── VehicleRequests.jsx
+│       ├── AllVehicles.jsx
+│       ├── AllBookings.jsx
+│       └── MasterData.jsx
+│
+├── routes/
+│   └── AppRoutes.jsx
+│
+├── store/
+│   ├── authSlice.js
+│   └── store.js
+│
+├── utils/
+│   ├── constants.js
+│   └── helpers.js
+│
+├── App.jsx
+└── main.jsx
+
+
+
+
+---------------------------------------------------
+
+1. Auth setup
+2. Axios setup
+3. Protected routes
+4. Home page
+5. Vehicle listing
+6. Booking flow
+7. Vendor dashboard
+8. Admin dashboard

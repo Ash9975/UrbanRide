@@ -5,47 +5,54 @@ const userSchema = new mongoose.Schema(
     username: {
       type: String,
       required: true,
-      unique: true,
+      trim: true,
     },
+
     email: {
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
     },
-    phoneNumber:{
-      type:String,
-      unique:true
+
+    phoneNumber: {
+      type: String,
+      sparse: true, // allows multiple null values
     },
-    adress:{
-      type:String,
+
+    address: {
+      type: String,
     },
+
     password: {
       type: String,
       required: true,
+      minlength: 6,
     },
 
     profilePicture: {
       type: String,
       default:
-        "https://media.istockphoto.com/id/1316420668/vector/user-icon-human-person-symbol-social-profile-icon-avatar-login-sign-web-user-symbol.jpg?s=612x612&w=0&k=20&c=AhqW2ssX8EeI2IYFm6-ASQ7rfeBWfrFFV4E87SaFhJE=",
-    },
-    isUser: {
-      type: Boolean,
-      default: false,
+        "https://images.unsplash.com/photo-1740252117044-2af197eea287",
     },
 
-    isAdmin: {
+    // 🔥 ROLE SYSTEM (IMPORTANT)
+    role: {
+      type: String,
+      enum: ["user", "vendor", "admin"],
+      default: "user",
+    },
+
+    refreshToken: {
+      type: String,
+      default: null,
+    },
+
+    isDeleted: {
       type: Boolean,
       default: false,
     },
-    isVendor: {
-      type: Boolean,
-      default: false,
-    },
-    refreshToken:{
-      type:String,
-      default:""
-    }
   },
   { timestamps: true }
 );

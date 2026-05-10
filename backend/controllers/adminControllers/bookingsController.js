@@ -1,57 +1,68 @@
 import Booking from "../../models/BookingModel.js";
-import Vehicle from "../../models/vehicleModel.js";
+import User from "../../models/userModel.js";
 import { errorHandler } from "../../utils/error.js";
 
 export const allBookings = async (req, res, next) => {
   try {
-    const bookings = await Booking.aggregate([
-      {
-        $lookup: {
-          from: "vehicles",
-          localField: "vehicleId",
-          foreignField: "_id",
-          as: "vehicleDetails",
-        },
-      },
-      {
-        $unwind: {
-          path: "$vehicleDetails",
-        },
-      },
-    ]);
+    const user = await User.findById(req.user);
 
-    if (!bookings) {
-      next(errorHandler(404, "no bookings found"));
+    if (!user || user.role !== "admin") {
+      return next(errorHandler(403, "Admin access required"));
     }
 
-    res.status(200).json(bookings);
+    const bookings = await Booking.find()
+      .populate("vehicleId")
+      .populate("userId");
+
+    if (!bookings.length) {
+      return next(errorHandler(404, "No bookings found"));
+    }
+
+    res.status(200).json({
+      success: true,
+      data: bookings,
+    });
+
   } catch (error) {
-    console.log(error);
-    next(errorHandler(500, "error in allBookings"));
+    next(error);
   }
 };
 
-//chnage bookings status
-
+//change bookings status
 export const changeStatus = async (req, res, next) => {
   try {
-    if (!req.body) {
-      next(errorHandler(409, "bad request vehicle id and new status needed"));
-      return;
-    }
-    const { id, status } = req.body;
+    const user = await User.findById(req.user);
 
-    const statusChanged = await Booking.findByIdAndUpdate(id, {
-      status: status,
+    if (!user || user.role !== "admin") {
+      return next(errorHandler(403, "Admin access required"));
+    }
+
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const allowedStatus = ["booked", "completed", "cancelled"];
+
+    if (!allowedStatus.includes(status)) {
+      return next(errorHandler(400, "Invalid status value"));
+    }
+
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedBooking) {
+      return next(errorHandler(404, "Booking not found"));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Status updated",
+      data: updatedBooking,
     });
 
-    if (!statusChanged) {
-      next(errorHandler(404, "status not changed or wrong id"));
-      return;
-    }
-    res.status(200).json({ message: "status changed" });
   } catch (error) {
-    console.log(error);
-    next(errorHandler(500, "error in changeStatus"));
+    next(error);
   }
 };
