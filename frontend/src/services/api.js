@@ -3,7 +3,7 @@ import axios from "axios";
 const api = axios.create({
 
   baseURL:
-    "https://urbanride-owib.onrender.com/api",
+    "https://urbanride-al8x.onrender.com/api",
 
   withCredentials: true,
 });
