@@ -17,6 +17,7 @@ import AdminPrivateRoutes from "./AdminPrivateRoutes";
 // PUBLIC PAGES
 import Home from "../pages/public/Home";
 import Login from "../pages/public/Login";
+import Signup from "../pages/public/Signup";
 import PublicVehicles from "../pages/public/Vehicles";
 import VehicleDetails from "../pages/public/VehicleDetails";
 
@@ -54,6 +55,11 @@ const AppRoutes = () => {
           <Route
             path="/login"
             element={<Login />}
+          />
+
+          <Route
+            path="/signup"
+            element={<Signup />}
           />
 
           <Route

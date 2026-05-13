@@ -18,11 +18,12 @@ const userSchema = new mongoose.Schema(
 
     phoneNumber: {
       type: String,
-      sparse: true, // allows multiple null values
+      required: true,
     },
 
     address: {
       type: String,
+      required: true,
     },
 
     password: {
@@ -34,14 +35,34 @@ const userSchema = new mongoose.Schema(
     profilePicture: {
       type: String,
       default:
-        "https://images.unsplash.com/photo-1740252117044-2af197eea287",
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
     },
 
-    // 🔥 ROLE SYSTEM (IMPORTANT)
     role: {
       type: String,
       enum: ["user", "vendor", "admin"],
       default: "user",
+    },
+
+    // VENDOR DETAILS
+    businessName: {
+      type: String,
+      default: "",
+    },
+
+    drivingLicense: {
+      type: String,
+      default: "",
+    },
+
+    gstNumber: {
+      type: String,
+      default: "",
+    },
+
+    vehicleCount: {
+      type: Number,
+      default: 0,
     },
 
     refreshToken: {

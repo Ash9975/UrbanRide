@@ -347,6 +347,8 @@ const Login = () => {
 
           </form>
 
+          
+
           {/* FOOTER */}
           <div className="mt-10 text-center text-gray-500">
 
@@ -354,6 +356,8 @@ const Login = () => {
             Marketplace Platform
 
           </div>
+
+          <div className="text-sm tect text-center font-semibold text-gray-400" >Create new account <a href="/signup" className="text-orange-600 sy">Sign Up</a></div>
 
         </div>
 

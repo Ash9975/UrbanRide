@@ -8,14 +8,13 @@ import { useLocation } from "react-router-dom";
 
 const MainLayout = () => {
   const location = useLocation();
-
+  const hideNavbarFooter = ["/login", "/signup", "/admin"];
   return (
 
     <div className="min-h-screen bg-[#f3f3f5]">
 
       {
-        location.pathname !== "/login" &&
-        <Navbar />
+        !hideNavbarFooter.includes(location.pathname) && <Navbar />
       }
 
       <main className="max-w-7xl mx-auto px-4 py-6">
@@ -25,8 +24,7 @@ const MainLayout = () => {
       </main>
 
       {
-        location.pathname !== "/login" &&
-        <Footer />
+        !hideNavbarFooter.includes(location.pathname) && <Footer />
       }
 
     </div>
