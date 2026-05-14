@@ -36,20 +36,17 @@ const Dashboard = () => {
 
   return (
 
-    <div className="min-h-screen bg-[#f3f3f5] p-6">
-
+    <div className="min-h-screen bg-[#f3f3f5] px-4 py-5 sm:px-6 lg:px-8">
       {/* TOP HEADER */}
-      <div className="bg-white rounded-[35px] p-8 shadow-sm mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      <div className="bg-white rounded-[28px] sm:rounded-[35px] p-5 sm:p-8shadow-sm mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
 
         <div>
 
-          <h1 className="text-5xl font-black mb-4">
-
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-4">
             Vendor Dashboard
-
           </h1>
 
-          <p className="text-gray-500 text-lg max-w-2xl">
+          <p className="text-gray-500 text-base sm:text-lg leading-relaxed max-w-2xl">
 
             Manage your luxury
             vehicle fleet, monitor
@@ -62,7 +59,7 @@ const Dashboard = () => {
         </div>
 
         {/* STATUS CARD */}
-        <div className="bg-lime-100 rounded-3xl px-8 py-6 min-w-[260px]">
+        <div className="bg-lime-100 rounded-3xl px-8 py-6 w-full sm:w-auto">
 
           <p className="text-sm text-gray-600 mb-2">
 
@@ -87,10 +84,10 @@ const Dashboard = () => {
       </div>
 
       {/* STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
 
         {/* TOTAL VEHICLES */}
-        <div className="bg-white rounded-[30px] p-8 shadow-sm relative overflow-hidden">
+        <div className="bg-white rounded-[24px] sm:rounded-[30px] p-5 sm:p-8 shadow-sm relative overflow-hidden">
 
           <div className="absolute top-0 right-0 w-32 h-32 bg-lime-100 rounded-full -mr-10 -mt-10" />
 
@@ -100,7 +97,7 @@ const Dashboard = () => {
 
           </p>
 
-          <h2 className="text-6xl font-black relative z-10">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black relative z-10">
 
             {
               analytics.totalVehicles
@@ -117,7 +114,7 @@ const Dashboard = () => {
         </div>
 
         {/* BOOKINGS */}
-        <div className="bg-black text-white rounded-[30px] p-8 shadow-sm relative overflow-hidden">
+        <div className="bg-black text-white rounded-[24px] sm:rounded-[30px] p-5 sm:p-8 shadow-sm relative overflow-hidden">
 
           <div className="absolute bottom-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-10 -mb-10" />
 
@@ -144,7 +141,7 @@ const Dashboard = () => {
         </div>
 
         {/* REVENUE */}
-        <div className="bg-white rounded-[30px] p-8 shadow-sm relative overflow-hidden">
+        <div className="bg-white rounded-[24px] sm:rounded-[30px] p-5 sm:p-8 shadow-sm relative overflow-hidden">
 
           <div className="absolute top-0 right-0 w-32 h-32 bg-lime-100 rounded-full -mr-10 -mt-10" />
 
@@ -174,14 +171,14 @@ const Dashboard = () => {
       </div>
 
       {/* QUICK ACTIONS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
 
         <a
           href="/vendor/add-vehicle"
-          className="bg-black text-white rounded-[30px] p-8 hover:scale-[1.02] transition"
+          className="bg-black text-white rounded-[24px] sm:rounded-[30px] p-5 sm:p-8 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 "
         >
 
-          <h2 className="text-3xl font-black mb-4">
+          <h2 className="text-2xl sm:text-3xl font-black mb-4">
 
             Add Vehicle
 
@@ -194,7 +191,7 @@ const Dashboard = () => {
 
           </p>
 
-          <button className="bg-lime-400 text-black px-5 py-3 rounded-2xl font-semibold">
+          <button className="bg-lime-400 text-black w-full sm:w-fit px-5 py-3 rounded-2xl font-semibold">
 
             Add Now
 
@@ -204,7 +201,7 @@ const Dashboard = () => {
 
         <a
           href="/vendor/vehicles"
-          className="bg-white rounded-[30px] p-8 hover:scale-[1.02] transition shadow-sm"
+          className="bg-white rounded-[24px] sm:rounded-[30px] p-5 sm:p-8 hover:scale-[1.02] transition shadow-sm"
         >
 
           <h2 className="text-3xl font-black mb-4">
@@ -220,7 +217,7 @@ const Dashboard = () => {
 
           </p>
 
-          <button className="bg-black text-white px-5 py-3 rounded-2xl font-semibold">
+          <button className="bg-black text-white w-full sm:w-fit px-5 py-3 rounded-2xl font-semibold">
 
             Manage Fleet
 
@@ -230,7 +227,7 @@ const Dashboard = () => {
 
         <a
           href="/vendor/bookings"
-          className="bg-lime-100 rounded-[30px] p-8 hover:scale-[1.02] transition"
+          className="bg-lime-100 rounded-[24px] sm:rounded-[30px] p-5 sm:p-8 hover:scale-[1.02] transition"
         >
 
           <h2 className="text-3xl font-black mb-4">
@@ -246,7 +243,7 @@ const Dashboard = () => {
 
           </p>
 
-          <button className="bg-black text-white px-5 py-3 rounded-2xl font-semibold">
+          <button className="bg-black text-white w-full sm:w-fit px-5 py-3 rounded-2xl font-semibold">
 
             View Bookings
 
@@ -257,11 +254,11 @@ const Dashboard = () => {
       </div>
 
       {/* BUSINESS INSIGHT SECTION */}
-      <div className="bg-white rounded-[35px] p-10 shadow-sm grid lg:grid-cols-2 gap-10 items-center">
+      <div className="bg-white rounded-[35px] p-10 shadow-sm grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
 
         <div>
 
-          <h2 className="text-5xl font-black mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6">
 
             Grow Your
             <br />
@@ -281,7 +278,7 @@ const Dashboard = () => {
 
           </p>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
 
             <div className="bg-lime-100 px-6 py-4 rounded-2xl">
 
@@ -324,7 +321,7 @@ const Dashboard = () => {
           <img
             src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1200&auto=format&fit=crop"
             alt="Luxury Car"
-            className="rounded-[35px] h-[420px] w-full object-cover"
+            className="rounded-[35px] h-[280px] sm:h-[360px] lg:h-[420px] w-full object-cover"
           />
 
         </div>

@@ -33,6 +33,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
 
     e.preventDefault();
+    console.log(selectedRole);
 
     try {
 
@@ -254,17 +255,18 @@ const Login = () => {
             {/* ROLE SELECTOR */}
             <div className="grid grid-cols-2 gap-4">
 
+              {/* user button */}
               <button
                 type="button"
-                onClick={() =>
-                  setSelectedRole(
-                    "user"
-                  )
-                }
-                className={`py-4 rounded-2xl font-semibold transition ${selectedRole ===
-                  "user"
-                  ? "bg-black text-white"
-                  : "bg-gray-100"
+                onClick={() => {
+
+                  console.log("user clicked");
+
+                  setSelectedRole("user");
+                }}
+                className={`py-4 rounded-2xl font-semibold transition-all duration-300 ${selectedRole === "user"
+                    ? "bg-black text-white"
+                    : "bg-gray-100 text-black"
                   }`}
               >
 
@@ -272,17 +274,18 @@ const Login = () => {
 
               </button>
 
+              {/* vendor button */}
               <button
                 type="button"
-                onClick={() =>
-                  setSelectedRole(
-                    "vendor"
-                  )
-                }
-                className={`py-4 rounded-2xl font-semibold transition ${selectedRole ===
-                  "vendor"
-                  ? "bg-lime-400 text-black"
-                  : "bg-gray-100"
+                onClick={() => {
+
+                  console.log("vendor clicked");
+
+                  setSelectedRole("vendor");
+                }}
+                className={`py-4 rounded-2xl font-semibold transition-all duration-300 ${selectedRole === "vendor"
+                    ? "bg-lime-400 text-black"
+                    : "bg-gray-100 text-black"
                   }`}
               >
 

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import {
+import useAuth from "../../features/auth/useAuth"; import {
   CalendarCheck,
   ShieldCheck,
   CarFront,
@@ -53,92 +53,213 @@ export default function Home() {
     },
   ];
 
+  const { user } = useAuth();
+
   return (
     <div className="bg-[#efeff1] min-h-screen px-6 py-6">
       <div className="max-w-7xl mx-auto bg-white rounded-[30px] overflow-hidden shadow-xl">
 
         {/* HERO */}
-        <section className="relative px-10 py-16 overflow-hidden">
+        <section className="relative px-4 sm:px-6 lg:px-10 py-6 sm:py-10 lg:py-16 overflow-hidden">
+
+          {/* BACKGROUND IMAGE */}
           <div
-            className="absolute inset-0 bg-cover bg-center rounded-[30px]"
+            className="absolute inset-0 bg-cover bg-center rounded-[30px] sm:rounded-[40px]"
             style={{
               backgroundImage:
                 "url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1600&auto=format&fit=crop')",
             }}
           />
 
-          <div className="absolute inset-0 bg-black/20 rounded-[30px]" />
+          {/* OVERLAY */}
+          <div className="absolute inset-0 bg-black/55 rounded-[30px] sm:rounded-[40px]" />
 
-          <div className="relative grid md:grid-cols-2 gap-10 items-center min-h-[600px]">
+          {/* CONTENT */}
+          <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center min-h-[850px] sm:min-h-[900px] lg:min-h-[650px] px-4 sm:px-8 lg:px-14 py-10">
+
+            {/* LEFT CONTENT */}
             <div className="text-white">
-              <h1 className="text-6xl font-black leading-tight mb-6">
-                Luxury Ride
+
+              {/* BADGE */}
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full mb-6">
+
+                <div className="w-2 h-2 bg-lime-400 rounded-full" />
+
+                <p className="text-sm font-medium text-gray-200">
+
+                  Trusted Vehicle Rental Platform
+
+                </p>
+
+              </div>
+
+              {/* TITLE */}
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight mb-6 tracking-tight">
+
+                Rent Vehicles
                 <br />
-                Rental Platform
+
+                For Every
+                <span className="text-lime-400">
+
+                  {" "}Journey
+
+                </span>
+
               </h1>
 
-              <p className="text-lg text-gray-200 mb-8 max-w-xl">
-                Premium car rental services with professional drivers and luxury
-                vehicle booking experience.
+              {/* DESCRIPTION */}
+              <p className="text-base sm:text-lg text-gray-200 leading-relaxed mb-8 max-w-2xl">
+
+                UrbanRide helps you book premium and everyday vehicles
+                for travel, business trips, airport transfers, weddings,
+                events and daily commuting — all with a seamless booking
+                experience and trusted professional vendors.
+
               </p>
 
-              <div className="flex gap-4">
-                <a
-                  href="/vehicles"
-                  className="bg-black text-white px-8 py-4 rounded-xl font-semibold"
-                >
-                  Explore Fleet
-                </a>
+              {/* FEATURES */}
+              <div className="flex flex-wrap gap-3 mb-10">
 
-                <a
-                  href="/bookings"
-                  className="bg-white text-black px-8 py-4 rounded-xl font-semibold"
-                >
-                  My Bookings
-                </a>
-              </div>
-            </div>
+                <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium">
 
-            {/* BOOKING BOX */}
-            <div className="flex justify-end">
-              <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl">
-                <div className="grid grid-cols-3 gap-2 mb-5">
-                  <button className="bg-lime-400 py-2 rounded-xl font-medium">
-                    Distance
-                  </button>
-                  <button className="bg-gray-100 py-2 rounded-xl">
-                    Hourly
-                  </button>
-                  <button className="bg-gray-100 py-2 rounded-xl">
-                    Flat Rate
-                  </button>
+                  Luxury Cars
+
                 </div>
 
+                <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium">
+
+                  Wedding Rentals
+
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium">
+
+                  Airport Transfers
+
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium">
+
+                  Business Travel
+
+                </div>
+
+              </div>
+
+              {/* BUTTONS */}
+              <div className="flex flex-col sm:flex-row gap-4">
+
+                {/* PRIMARY BUTTON */}
+                <a
+                  href="/vehicles"
+                  className="bg-lime-400 hover:bg-lime-300 text-black px-8 py-4 rounded-2xl font-bold text-center transition-all duration-300 hover:scale-[1.02]"
+                >
+
+                  Explore Vehicles
+
+                </a>
+
+                {/* SECOND BUTTON */}
+                {
+                  user ? (
+
+                    <a
+                      href="/bookings"
+                      className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-bold text-center transition-all duration-300"
+                    >
+
+                      My Bookings
+
+                    </a>
+
+                  ) : (
+
+                    <a
+                      href="/vendor/signup"
+                      className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-bold text-center transition-all duration-300"
+                    >
+
+                      Become a Vendor
+
+                    </a>
+
+                  )
+                }
+
+              </div>
+
+            </div>
+
+            {/* BOOKING CARD */}
+            <div className="flex justify-center lg:justify-end">
+
+              <div className="bg-white/95 backdrop-blur-2xl rounded-[30px] p-5 sm:p-7 w-full max-w-md shadow-[0_20px_80px_rgba(0,0,0,0.35)] border border-white/40">
+
+                {/* TABS */}
+                <div className="grid grid-cols-3 gap-2 mb-6">
+
+                  <button className="bg-lime-400 py-3 rounded-xl font-semibold text-sm sm:text-base">
+
+                    Distance
+
+                  </button>
+
+                  <button className="bg-gray-100 hover:bg-gray-200 py-3 rounded-xl transition text-sm sm:text-base">
+
+                    Hourly
+
+                  </button>
+
+                  <button className="bg-gray-100 hover:bg-gray-200 py-3 rounded-xl transition text-sm sm:text-base">
+
+                    Flat Rate
+
+                  </button>
+
+                </div>
+
+                {/* INPUTS */}
                 <div className="space-y-4">
+
                   <input
                     type="text"
                     placeholder="Pick Up Address"
-                    className="w-full border bg-gray-100 rounded-xl px-4 py-3"
+                    className="w-full border border-gray-200 bg-gray-100 rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-lime-400 transition"
                   />
 
                   <input
                     type="text"
                     placeholder="Drop Off Address"
-                    className="w-full border bg-gray-100 rounded-xl px-4 py-3"
+                    className="w-full border border-gray-200 bg-gray-100 rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-lime-400 transition"
                   />
 
                   <input
                     type="date"
-                    className="w-full border bg-gray-100 rounded-xl px-4 py-3"
+                    className="w-full border border-gray-200 bg-gray-100 rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-lime-400 transition"
                   />
 
-                  <button className="w-full bg-black text-white py-4 rounded-xl font-semibold">
-                    Reserve Now
+                  <button className="w-full bg-black hover:bg-gray-900 text-white py-4 rounded-2xl font-bold transition-all duration-300 hover:shadow-2xl">
+
+                    Reserve Your Ride
+
                   </button>
+
                 </div>
+
+                {/* FOOTER TEXT */}
+                <p className="text-center text-sm text-gray-500 mt-5 leading-relaxed">
+
+                  Fast booking • Secure payments • Trusted vendors
+
+                </p>
+
               </div>
+
             </div>
+
           </div>
+
         </section>
 
         {/* SERVICES */}

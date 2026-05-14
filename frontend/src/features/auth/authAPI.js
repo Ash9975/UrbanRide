@@ -7,6 +7,7 @@ export const loginUser = async (formData, role) => {
   // USER LOGIN
   if (role === "user") {
     endpoint = "/auth/login";
+    console.log("User login endpoint:", endpoint);
   }
 
   // VENDOR LOGIN

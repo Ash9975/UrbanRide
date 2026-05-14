@@ -150,55 +150,96 @@ export const refreshToken = async (req, res, next) => {
   }
 };
 
-export const signIn = async (req, res, next) => {
-  const { email, password } = req.body;
+export const signIn =
+  async (req, res, next) => {
 
-  try {
-    const user = await User.findOne({
-      email: email.toLowerCase(),
-      role: "vendor",
-    }); if (!user) {
-      return res.status(404)
-        .json({
-          success: false,
-          message:
-            "Vendor not found",
+    const {
+      email,
+      password,
+    } = req.body;
+
+    try {
+
+      const user =
+        await User.findOne({
+          email:
+            email.toLowerCase(),
+          role: "user",
         });
-    }
-    const validPassword = bcryptjs.compareSync(password, user.password);
-    if (!validPassword)
-      return next(errorHandler(401, "Invalid credentials"));
 
-    const accessToken = Jwt.sign(
-      { id: user._id },
-      process.env.ACCESS_TOKEN,
-      { expiresIn: "15m" }
-    );
+      if (!user) {
 
-    const refreshToken = Jwt.sign(
-      { id: user._id },
-      process.env.REFRESH_TOKEN,
-      { expiresIn: "7d" }
-    );
-
-    await User.findByIdAndUpdate(
-      user._id,
-      {
-        refreshToken,
+        return next(
+          errorHandler(
+            404,
+            "User not found"
+          )
+        );
       }
-    );
 
-    const { password: hashedPassword, ...rest } = user._doc;
+      const validPassword =
+        bcryptjs.compareSync(
+          password,
+          user.password
+        );
 
-    res.status(200).json({
-      ...rest,
-      accessToken,
-      refreshToken,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+      if (!validPassword) {
+
+        return next(
+          errorHandler(
+            401,
+            "Invalid credentials"
+          )
+        );
+      }
+
+      const accessToken =
+        Jwt.sign(
+          {
+            id: user._id,
+          },
+          process.env.ACCESS_TOKEN,
+          {
+            expiresIn: "15m",
+          }
+        );
+
+      const refreshToken =
+        Jwt.sign(
+          {
+            id: user._id,
+          },
+          process.env.REFRESH_TOKEN,
+          {
+            expiresIn: "7d",
+          }
+        );
+
+      // fixed validation issue
+      await User.findByIdAndUpdate(
+        user._id,
+        {
+          refreshToken,
+        }
+      );
+
+      const {
+        password:
+        hashedPassword,
+        ...rest
+      } = user._doc;
+
+      res.status(200).json({
+        ...rest,
+        accessToken,
+        refreshToken,
+      });
+
+    } catch (error) {
+
+      next(error);
+    }
+  };
 
 export const google = async (req, res, next) => {
   try {
