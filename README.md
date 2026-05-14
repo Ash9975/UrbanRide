@@ -2,7 +2,7 @@ Urban Ride 🚘
 A full-stack MERN luxury vehicle rental platform where users can browse premium vehicles, make bookings, and vendors can manage their fleet through a dedicated dashboard.
 
 🌐 Live Demo
-Frontend: https://urbanride-rose.vercel.app
+Frontend: https://urban-ride-zeta.vercel.app
 Backend API: https://urbanride-al8x.onrender.com
 
 ✨ Features
