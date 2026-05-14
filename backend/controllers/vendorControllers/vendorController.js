@@ -62,8 +62,12 @@ export const vendorSignin = async (req, res, next) => {
       { expiresIn: "7d" }
     );
 
-    user.refreshToken = refreshToken;
-    await user.save();
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        refreshToken,
+      }
+    );
 
     const { password: hashedPassword, ...rest } = user._doc;
 

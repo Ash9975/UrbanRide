@@ -20,14 +20,14 @@ app.use(express.json());
 app.use(cookieParser());
 
 const allowedOrigins = [
-  "urbanride-rose.vercel.app",
+  "https://urban-ride-zeta.vercel.app",
   "http://localhost:5173",
 ];
 
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://urbanride-rose.vercel.app"
+    "https://urban-ride-zeta.vercel.app"
   ],
   credentials: true,
 }));

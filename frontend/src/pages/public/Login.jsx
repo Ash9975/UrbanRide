@@ -72,9 +72,14 @@ const Login = () => {
 
     } catch (error) {
 
-      console.log(error);
+      console.log(
+        error.response?.data
+      );
 
-      alert("Login failed");
+      alert(
+        error.response?.data?.message
+        || "Login failed"
+      );
 
     } finally {
 
@@ -347,7 +352,7 @@ const Login = () => {
 
           </form>
 
-          
+
 
           {/* FOOTER */}
           <div className="mt-10 text-center text-gray-500">

@@ -154,9 +154,17 @@ export const signIn = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
-    if (!user) return next(errorHandler(404, "User not found"));
-
+    const user = await User.findOne({
+      email: email.toLowerCase(),
+      role: "vendor",
+    }); if (!user) {
+      return res.status(404)
+        .json({
+          success: false,
+          message:
+            "Vendor not found",
+        });
+    }
     const validPassword = bcryptjs.compareSync(password, user.password);
     if (!validPassword)
       return next(errorHandler(401, "Invalid credentials"));
@@ -173,8 +181,12 @@ export const signIn = async (req, res, next) => {
       { expiresIn: "7d" }
     );
 
-    user.refreshToken = refreshToken;
-    await user.save();
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        refreshToken,
+      }
+    );
 
     const { password: hashedPassword, ...rest } = user._doc;
 
