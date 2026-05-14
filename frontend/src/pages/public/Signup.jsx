@@ -55,11 +55,10 @@ const Signup = () => {
 
       setLoading(true);
 
-      const data =
-        await signupUser(
-          formData,
-          selectedRole
-        );
+      const data = await signupUser(
+        formData,
+        selectedRole
+      );
 
       console.log(data);
 
@@ -170,8 +169,8 @@ const Signup = () => {
                   setSelectedRole("user")
                 }
                 className={`py-4 rounded-2xl font-semibold transition ${selectedRole === "user"
-                    ? "bg-black text-white"
-                    : "bg-gray-100"
+                  ? "bg-black text-white"
+                  : "bg-gray-100"
                   }`}
               >
 
@@ -185,8 +184,8 @@ const Signup = () => {
                   setSelectedRole("vendor")
                 }
                 className={`py-4 rounded-2xl font-semibold transition ${selectedRole === "vendor"
-                    ? "bg-lime-400 text-black"
-                    : "bg-gray-100"
+                  ? "bg-lime-400 text-black"
+                  : "bg-gray-100"
                   }`}
               >
 

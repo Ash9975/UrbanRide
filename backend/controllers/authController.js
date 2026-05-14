@@ -5,29 +5,120 @@ import Jwt from "jsonwebtoken";
 
 const expireDate = new Date(Date.now() + 3600000);
 
-export const signUp = async (req, res, next) => {
-  const { username, email, password } = req.body;
+export const signUp = async (
+  req,
+  res,
+  next
+) => {
+
+  const {
+    username,
+    email,
+    password,
+    phoneNumber,
+    address,
+
+    role,
+
+    businessName,
+    drivingLicense,
+    gstNumber,
+    vehicleCount,
+
+  } = req.body;
 
   try {
-    const existingUser = await User.findOne({ email });
+
+    // CHECK EXISTING USER
+    const existingUser =
+      await User.findOne({ email });
+
     if (existingUser) {
-      return next(errorHandler(400, "User already exists"));
+
+      return next(
+        errorHandler(
+          400,
+          "User already exists"
+        )
+      );
     }
 
-    const hashedPassword = bcryptjs.hashSync(password, 10);
+    // HASH PASSWORD
+    const hashedPassword =
+      bcryptjs.hashSync(password, 10);
 
+    // VENDOR VALIDATION
+    if (role === "vendor") {
+
+      if (
+        !businessName ||
+        !drivingLicense ||
+        !gstNumber
+      ) {
+
+        return next(
+          errorHandler(
+            400,
+            "Vendor fields required"
+          )
+        );
+      }
+    }
+
+    // CREATE USER
     const newUser = new User({
+
       username,
       email,
       password: hashedPassword,
-      isUser: true,
+
+      phoneNumber,
+      address,
+
+      // ROLES
+      isUser: role === "user",
+      isVendor: role === "vendor",
+
+      // VENDOR DATA
+      businessName:
+        role === "vendor"
+          ? businessName
+          : "",
+
+      drivingLicense:
+        role === "vendor"
+          ? drivingLicense
+          : "",
+
+      gstNumber:
+        role === "vendor"
+          ? gstNumber
+          : "",
+
+      vehicleCount:
+        role === "vendor"
+          ? vehicleCount
+          : 0,
     });
 
     await newUser.save();
 
-    res.status(201).json({ message: "User registered successfully" });
+    res.status(201).json({
+      success: true,
+      message:
+        role === "vendor"
+          ? "Vendor registered successfully"
+          : "User registered successfully",
+    });
+
   } catch (error) {
-    next(error);
+
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 

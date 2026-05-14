@@ -24,12 +24,13 @@ const allowedOrigins = [
   "http://localhost:5173",
 ];
 
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://urbanride-rose.vercel.app"
+  ],
+  credentials: true,
+}));
 
 app.get("/", (req, res) => {
   res.send("API is running...");
