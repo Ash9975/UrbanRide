@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { loginUser } from "../../features/auth/authAPI";
 import useAuth from "../../features/auth/useAuth";
@@ -365,7 +365,7 @@ const Login = () => {
 
           </div>
 
-          <div className="text-sm tect text-center font-semibold text-gray-400" >Create new account <a href="/signup" className="text-orange-600 sy">Sign Up</a></div>
+          <div className="text-sm tect text-center font-semibold text-gray-400" >Create new account <Link to="/signup">Sign Up</Link></div>
 
         </div>
 

@@ -37,22 +37,17 @@ export const signupUser = async (
 
   // USER SIGNUP
   if (role === "user") {
-
     endpoint = "/auth/signup";
-
   }
 
   // VENDOR SIGNUP
   else if (role === "vendor") {
-
     endpoint =
       "/vendor/auth/signup";
-
   }
 
   // ADMIN SIGNUP
   else if (role === "admin") {
-
     endpoint =
       "/admin/auth/signup";
   }

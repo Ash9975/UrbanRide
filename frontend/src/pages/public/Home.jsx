@@ -117,7 +117,6 @@ export default function Home() {
                 experience and trusted professional vendors.
 
               </p>
-              <h1>New Page</h1>
 
               {/* FEATURES */}
               <div className="flex flex-wrap gap-3 mb-10">
@@ -152,38 +151,34 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4">
 
                 {/* PRIMARY BUTTON */}
-                <a
-                  href="/vehicles"
+                <Link
+                  to="/vehicles"
                   className="bg-lime-400 hover:bg-lime-300 text-black px-8 py-4 rounded-2xl font-bold text-center transition-all duration-300 hover:scale-[1.02]"
                 >
-
                   Explore Vehicles
+                </Link>
 
-                </a>
-
-                {/* SECOND BUTTON */}
+                {/* second button */}
                 {
                   user ? (
 
-                    <a
-                      href="/bookings"
+                    <Link
+                      to="/bookings"
                       className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-bold text-center transition-all duration-300"
                     >
 
                       My Bookings
 
-                    </a>
+                    </Link>
 
                   ) : (
 
-                    <a
-                      href="/vendor/signup"
+                    <Link
+                      to="/vendor/signup"
                       className="bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-bold text-center transition-all duration-300"
                     >
-
                       Become a Vendor
-
-                    </a>
+                    </Link>
 
                   )
                 }
