@@ -117,6 +117,7 @@ export default function Home() {
                 experience and trusted professional vendors.
 
               </p>
+              <h1>New Page</h1>
 
               {/* FEATURES */}
               <div className="flex flex-wrap gap-3 mb-10">
