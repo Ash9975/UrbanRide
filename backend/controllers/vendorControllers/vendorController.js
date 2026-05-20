@@ -5,35 +5,77 @@ import { errorHandler } from "../../utils/error.js";
 
 
 const expireDate = new Date(Date.now() + 3600000);
+export const vendorSignup =async (req, res, next) => {
 
-export const vendorSignup = async (req, res, next) => {
-  const { username, email, password } = req.body;
+    const {
+      username,email,password,phoneNumber,address,
+      businessName,drivingLicense,gstNumber,vehicleCount,
+    } = req.body;
 
-  try {
-    if (!username || !email || !password) {
-      return next(errorHandler(400, "All fields are required"));
+    try {
+
+      // validation
+      if (
+        !username ||
+        !email ||
+        !password ||
+        !phoneNumber ||
+        !address
+      ) {
+
+        return next(
+          errorHandler(400,"All fields are required")
+        );
+      }
+
+      // existing user check
+      const existingUser =
+        await User.findOne({
+          email,
+        });
+
+      if (existingUser) {
+
+        return next(
+          errorHandler(
+            400,
+            "User already exists"
+          )
+        );
+      }
+
+
+      const hashedPassword =
+        bcryptjs.hashSync(
+          password,
+          10
+        );
+
+
+      const user =
+        new User({
+          username,
+          email:email.toLowerCase(),
+          password: hashedPassword,
+          phoneNumber,
+          address,
+          role: "vendor",
+          businessName, drivingLicense, gstNumber, vehicleCount,
+        });
+
+      await user.save();
+
+      res.status(201).json({
+        success: true,
+        message:
+          "Vendor registered successfully",
+      });
+
+    } catch (error) {
+
+      next(error);
     }
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return next(errorHandler(400, "User already exists"));
-    }
-
-    const hashedPassword = bcryptjs.hashSync(password, 10);
-
-    const user = new User({
-      username,
-      email: email.toLowerCase(),
-      password: hashedPassword,
-      role: "vendor",
-    });
-
-    await user.save();
-
-    res.status(201).json({ message: "Vendor registered successfully" });
-  } catch (error) {
-    next(error);
-  }
-};
+  };
 
 export const vendorSignin = async (req, res, next) => {
   const { email, password } = req.body;

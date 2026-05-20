@@ -33,7 +33,10 @@ const Signup = () => {
 
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.name === "vehicleCount"
+          ? Number(e.target.value)
+          : e.target.value,
     });
   };
 
