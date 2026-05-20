@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { signupUser } from "../../features/auth/authAPI";
 
+
 const Signup = () => {
 
   const navigate = useNavigate();
