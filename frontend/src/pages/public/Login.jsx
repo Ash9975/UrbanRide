@@ -45,7 +45,6 @@ const Login = () => {
           selectedRole
         );
       console.log("LOGIN RESPONSE:", data);
-      console.log("LOGIN USER:", data.user);
 
       login(data);
 

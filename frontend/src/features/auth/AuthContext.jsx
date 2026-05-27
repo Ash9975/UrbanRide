@@ -1,45 +1,58 @@
-import { createContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useEffect,
+  useState,
+} from "react";
 
-const AuthContext = createContext();
+const AuthContext =
+  createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({
+  children,
+}) => {
 
-  const [user, setUser] = useState(undefined);
+  const [user, setUser] =
+    useState(undefined);
 
   useEffect(() => {
 
-    const token =
-      localStorage.getItem("token");
+    try {
 
-    const storedUser =
-      localStorage.getItem("user");
+      const token =
+        localStorage.getItem("token");
 
-    // SAFE CHECK
-    if (
-      token &&
-      storedUser &&
-      storedUser !== "undefined"
-    ) {
+      const storedUser =
+        localStorage.getItem("user");
 
-      setUser(
-        JSON.parse(storedUser)
+      // USER EXISTS
+      if (
+        token &&
+        storedUser &&
+        storedUser !== "undefined"
+      ) {
+
+        const parsedUser =
+          JSON.parse(storedUser);
+
+        setUser(parsedUser);
+
+      } else {
+
+        // ONLY SET NULL
+        setUser(null);
+      }
+
+    } catch (error) {
+
+      console.log(
+        "Auth Load Error:",
+        error
       );
-
-    } else {
 
       setUser(null);
-
-      localStorage.removeItem(
-        "user"
-      );
-
-      localStorage.removeItem(
-        "token"
-      );
     }
 
   }, []);
-
   // LOGIN
   const login = (data) => {
 
