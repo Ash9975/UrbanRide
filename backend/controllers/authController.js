@@ -164,7 +164,7 @@ export const signIn =
         await User.findOne({
           email:
             email.toLowerCase(),
-          role: "user",
+          isUser: true,
         });
 
       if (!user) {
@@ -230,7 +230,8 @@ export const signIn =
       } = user._doc;
 
       res.status(200).json({
-        ...rest,
+        success: true,
+        user: rest,
         accessToken,
         refreshToken,
       });
@@ -245,8 +246,13 @@ export const google = async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
 
-    if (user && user.role !== "user") {
-      return next(errorHandler(409, "Email already used as vendor"));
+    if (user && !user.isUser) {
+      return next(
+        errorHandler(
+          409,
+          "Email already used as vendor"
+        )
+      );
     }
 
     if (!user) {
@@ -264,6 +270,7 @@ export const google = async (req, res, next) => {
         email: req.body.email,
         password: hashedPassword,
         isUser: true,
+        isVendor: false,
       });
 
       await user.save();
@@ -284,10 +291,11 @@ export const google = async (req, res, next) => {
     user.refreshToken = refreshToken;
     await user.save();
 
-    const { password, ...rest } = user._doc;
+    const { password: hashedPassword, ...rest } = user._doc;
 
     res.status(200).json({
-      ...rest,
+      success: true,
+      user: rest,
       accessToken,
       refreshToken,
     });

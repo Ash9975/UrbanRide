@@ -59,7 +59,8 @@ export const vendorSignup = async (req, res, next) => {
         password: hashedPassword,
         phoneNumber,
         address,
-        role: "vendor",
+        isVendor: true,
+        isUser: false,
         businessName, drivingLicense, gstNumber, vehicleCount,
       });
 
@@ -72,6 +73,7 @@ export const vendorSignup = async (req, res, next) => {
     });
 
   } catch (error) {
+    console.log(error);
 
     next(error);
   }
@@ -83,7 +85,7 @@ export const vendorSignin = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: email.toLowerCase() });
 
-    if (!user || user.role !== "vendor") {
+    if (!user || !user.isVendor) {
       return next(errorHandler(404, "Vendor not found"));
     }
 
@@ -93,13 +95,21 @@ export const vendorSignin = async (req, res, next) => {
     }
 
     const accessToken = Jwt.sign(
-      { id: user._id },
+      {
+        id: user._id,
+        isVendor: user.isVendor,
+        isUser: user.isUser,
+      },
       process.env.ACCESS_TOKEN,
       { expiresIn: "15m" }
     );
 
     const refreshToken = Jwt.sign(
-      { id: user._id },
+      {
+        id: user._id,
+        isVendor: user.isVendor,
+        isUser: user.isUser,
+      },
       process.env.REFRESH_TOKEN,
       { expiresIn: "7d" }
     );
@@ -114,7 +124,8 @@ export const vendorSignin = async (req, res, next) => {
     const { password: hashedPassword, ...rest } = user._doc;
 
     res.status(200).json({
-      ...rest,
+      success: true,
+      user: rest,
       accessToken,
       refreshToken,
     });
@@ -140,7 +151,7 @@ export const vendorGoogle = async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
 
-    if (user && user.role !== "vendor") {
+    if (user && !user.isVendor) {
       return next(errorHandler(409, "Email already used as user"));
     }
 
@@ -158,7 +169,8 @@ export const vendorGoogle = async (req, res, next) => {
           Math.random().toString(36).slice(-8),
         email: req.body.email.toLowerCase(),
         password: hashedPassword,
-        role: "vendor",
+        isVendor: true,
+        isUser: false,
       });
 
       await user.save();
@@ -182,7 +194,8 @@ export const vendorGoogle = async (req, res, next) => {
     const { password, ...rest } = user._doc;
 
     res.status(200).json({
-      ...rest,
+      success: true,
+      user: rest,
       accessToken,
       refreshToken,
     });

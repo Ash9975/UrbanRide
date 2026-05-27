@@ -26,6 +26,7 @@ import Profile from "../pages/user/Profile";
 import UserBookings from "../pages/user/Bookings";
 
 // VENDOR PAGES
+import VendorProfile from "../pages/vendor/Profile";
 import VendorDashboard from "../pages/vendor/Dashboard";
 import VendorVehicles from "../pages/vendor/Vehicles";
 import AddVehicle from "../pages/vendor/AddVehicle";
@@ -102,8 +103,18 @@ const AppRoutes = () => {
           >
 
             <Route
+              index
+              element={<VendorDashboard />}
+            />
+
+            <Route
               path="dashboard"
               element={<VendorDashboard />}
+            />
+
+            <Route
+              path="profile"
+              element={<VendorProfile />}
             />
 
             <Route

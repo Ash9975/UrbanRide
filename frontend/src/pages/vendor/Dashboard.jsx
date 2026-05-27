@@ -1,8 +1,20 @@
 import { useEffect, useState } from "react";
-
+import { Link } from "react-router-dom";
+import VendorSidebar from "../../components/vendor/VendorSidebar";
+import VendorTopbar from "../../components/vendor/VendorTopbar";
 import {
   getVendorAnalytics,
 } from "../../features/vendor/vendorAPI";
+
+import {
+  ChevronRight,
+  LayoutDashboard,
+  CarFront,
+  BookOpen,
+  ChartNoAxesCombined,
+} from "lucide-react";
+
+
 
 const Dashboard = () => {
 
@@ -12,6 +24,10 @@ const Dashboard = () => {
       totalBookings: 0,
       totalRevenue: 0,
     });
+
+  const [sidebarOpen,
+    setSidebarOpen] =
+    useState(false);
 
   useEffect(() => {
 
@@ -36,297 +52,212 @@ const Dashboard = () => {
 
   return (
 
-    <div className="min-h-screen bg-[#f3f3f5] px-4 py-5 sm:px-6 lg:px-8">
-      {/* TOP HEADER */}
-      <div className="bg-white rounded-[28px] sm:rounded-[35px] p-5 sm:p-8shadow-sm mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+    <div className="min-h-screen bg-[#f3f3f5] flex overflow-hidden">
 
-        <div>
+      {/* main content */}
+      <main className="flex-1 px-4 sm:px-6 lg:px-10 py-6 lg:ml-0 w-full overflow-y-auto">
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-4">
-            Vendor Dashboard
-          </h1>
+        {/* top section */}
+        <div className="bg-white rounded-[30px] p-5 sm:p-8 shadow-sm mb-8 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
 
-          <p className="text-gray-500 text-base sm:text-lg leading-relaxed max-w-2xl">
+          <div>
 
-            Manage your luxury
-            vehicle fleet, monitor
-            bookings, track revenue
-            and grow your rental
-            business with Urban Ride.
+            <h1 className="text-3xl sm:text-5xl font-black leading-tight mb-4">
 
-          </p>
+              Vendor Dashboard
 
-        </div>
+            </h1>
 
-        {/* STATUS CARD */}
-        <div className="bg-lime-100 rounded-3xl px-8 py-6 w-full sm:w-auto">
+            <p className="text-gray-500 text-sm sm:text-lg max-w-2xl leading-relaxed">
 
-          <p className="text-sm text-gray-600 mb-2">
+              Manage vehicles, bookings, revenue and grow your premium rental business with Urban Ride.
 
-            Vendor Status
+            </p>
 
-          </p>
+          </div>
 
-          <h2 className="text-3xl font-black mb-2">
+          <div className="bg-lime-100 rounded-3xl px-6 py-5 w-full sm:w-fit">
 
-            Active Partner
+            <p className="text-sm text-gray-600 mb-2">
 
-          </h2>
+              Vendor Status
 
-          <p className="text-gray-600">
+            </p>
 
-            Premium Vendor Access
+            <h2 className="text-2xl sm:text-3xl font-black mb-1">
 
-          </p>
+              Active Partner
 
-        </div>
+            </h2>
 
-      </div>
+            <p className="text-gray-600 text-sm">
 
-      {/* STATS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
+              Premium Vendor Access
 
-        {/* TOTAL VEHICLES */}
-        <div className="bg-white rounded-[24px] sm:rounded-[30px] p-5 sm:p-8 shadow-sm relative overflow-hidden">
-
-          <div className="absolute top-0 right-0 w-32 h-32 bg-lime-100 rounded-full -mr-10 -mt-10" />
-
-          <p className="text-gray-500 mb-3 text-lg relative z-10">
-
-            Total Vehicles
-
-          </p>
-
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black relative z-10">
-
-            {
-              analytics.totalVehicles
-            }
-
-          </h2>
-
-          <p className="mt-4 text-gray-400 relative z-10">
-
-            Active listed vehicles
-
-          </p>
-
-        </div>
-
-        {/* BOOKINGS */}
-        <div className="bg-black text-white rounded-[24px] sm:rounded-[30px] p-5 sm:p-8 shadow-sm relative overflow-hidden">
-
-          <div className="absolute bottom-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-10 -mb-10" />
-
-          <p className="text-gray-300 mb-3 text-lg relative z-10">
-
-            Total Bookings
-
-          </p>
-
-          <h2 className="text-6xl font-black relative z-10">
-
-            {
-              analytics.totalBookings
-            }
-
-          </h2>
-
-          <p className="mt-4 text-gray-400 relative z-10">
-
-            Customer reservations
-
-          </p>
-
-        </div>
-
-        {/* REVENUE */}
-        <div className="bg-white rounded-[24px] sm:rounded-[30px] p-5 sm:p-8 shadow-sm relative overflow-hidden">
-
-          <div className="absolute top-0 right-0 w-32 h-32 bg-lime-100 rounded-full -mr-10 -mt-10" />
-
-          <p className="text-gray-500 mb-3 text-lg relative z-10">
-
-            Total Revenue
-
-          </p>
-
-          <h2 className="text-6xl font-black relative z-10">
-
-            ₹
-            {
-              analytics.totalRevenue
-            }
-
-          </h2>
-
-          <p className="mt-4 text-gray-400 relative z-10">
-
-            Overall earnings
-
-          </p>
-
-        </div>
-
-      </div>
-
-      {/* QUICK ACTIONS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
-
-        <a
-          href="/vendor/add-vehicle"
-          className="bg-black text-white rounded-[24px] sm:rounded-[30px] p-5 sm:p-8 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 "
-        >
-
-          <h2 className="text-2xl sm:text-3xl font-black mb-4">
-
-            Add Vehicle
-
-          </h2>
-
-          <p className="text-gray-300 mb-6">
-
-            List a new luxury
-            vehicle for customers.
-
-          </p>
-
-          <button className="bg-lime-400 text-black w-full sm:w-fit px-5 py-3 rounded-2xl font-semibold">
-
-            Add Now
-
-          </button>
-
-        </a>
-
-        <a
-          href="/vendor/vehicles"
-          className="bg-white rounded-[24px] sm:rounded-[30px] p-5 sm:p-8 hover:scale-[1.02] transition shadow-sm"
-        >
-
-          <h2 className="text-3xl font-black mb-4">
-
-            My Fleet
-
-          </h2>
-
-          <p className="text-gray-500 mb-6">
-
-            Manage your listed
-            vehicles and availability.
-
-          </p>
-
-          <button className="bg-black text-white w-full sm:w-fit px-5 py-3 rounded-2xl font-semibold">
-
-            Manage Fleet
-
-          </button>
-
-        </a>
-
-        <a
-          href="/vendor/bookings"
-          className="bg-lime-100 rounded-[24px] sm:rounded-[30px] p-5 sm:p-8 hover:scale-[1.02] transition"
-        >
-
-          <h2 className="text-3xl font-black mb-4">
-
-            Bookings
-
-          </h2>
-
-          <p className="text-gray-700 mb-6">
-
-            Approve or manage
-            customer reservations.
-
-          </p>
-
-          <button className="bg-black text-white w-full sm:w-fit px-5 py-3 rounded-2xl font-semibold">
-
-            View Bookings
-
-          </button>
-
-        </a>
-
-      </div>
-
-      {/* BUSINESS INSIGHT SECTION */}
-      <div className="bg-white rounded-[35px] p-10 shadow-sm grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-
-        <div>
-
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-6">
-
-            Grow Your
-            <br />
-
-            Rental Business
-
-          </h2>
-
-          <p className="text-gray-500 text-lg mb-8 leading-relaxed">
-
-            Urban Ride helps vendors
-            manage luxury vehicles,
-            increase bookings and
-            deliver premium customer
-            experiences through a
-            modern rental platform.
-
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-
-            <div className="bg-lime-100 px-6 py-4 rounded-2xl">
-
-              <h3 className="text-3xl font-black">
-
-                24/7
-
-              </h3>
-
-              <p className="text-gray-600">
-
-                Booking Access
-
-              </p>
-
-            </div>
-
-            <div className="bg-black text-white px-6 py-4 rounded-2xl">
-
-              <h3 className="text-3xl font-black">
-
-                Secure
-
-              </h3>
-
-              <p className="text-gray-300">
-
-                Vendor System
-
-              </p>
-
-            </div>
+            </p>
 
           </div>
 
         </div>
 
-        <div>
+        {/* stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 mb-8">
 
-          <img
-            src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1200&auto=format&fit=crop"
-            alt="Luxury Car"
-            className="rounded-[35px] h-[280px] sm:h-[360px] lg:h-[420px] w-full object-cover"
-          />
+          <div className="bg-white rounded-[28px] p-6 shadow-sm relative overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
+
+            <div className="absolute top-0 right-0 w-32 h-32 bg-lime-100 rounded-full -mr-10 -mt-10" />
+
+            <p className="text-gray-500 mb-3 text-lg relative z-10">
+
+              Total Vehicles
+
+            </p>
+
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black relative z-10">
+
+              {analytics.totalVehicles}
+
+            </h2>
+
+            <p className="mt-4 text-gray-400 relative z-10">
+
+              Active listed vehicles
+
+            </p>
+
+          </div>
+
+          <div className="bg-black text-white rounded-[28px] p-6 shadow-sm relative overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
+
+            <div className="absolute bottom-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-10 -mb-10" />
+
+            <p className="text-gray-300 mb-3 text-lg relative z-10">
+
+              Total Bookings
+
+            </p>
+
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black relative z-10">
+
+              {analytics.totalBookings}
+
+            </h2>
+
+            <p className="mt-4 text-gray-400 relative z-10">
+
+              Customer reservations
+
+            </p>
+
+          </div>
+
+          <div className="bg-white rounded-[28px] p-6 shadow-sm relative overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
+
+            <div className="absolute top-0 right-0 w-32 h-32 bg-lime-100 rounded-full -mr-10 -mt-10" />
+
+            <p className="text-gray-500 mb-3 text-lg relative z-10">
+
+              Total Revenue
+
+            </p>
+
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black relative z-10">
+
+              ₹{analytics.totalRevenue}
+
+            </h2>
+
+            <p className="mt-4 text-gray-400 relative z-10">
+
+              Overall earnings
+
+            </p>
+
+          </div>
 
         </div>
 
-      </div>
+        {/* actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-10">
+
+          <Link
+            to="/vendor/add-vehicle"
+            className="bg-black text-white rounded-[28px] p-6 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300"
+          >
+
+            <h2 className="text-2xl font-black mb-4">
+
+              Add Vehicle
+
+            </h2>
+
+            <p className="text-gray-300 mb-6">
+
+              List a new luxury vehicle.
+
+            </p>
+
+            <button className="bg-lime-400 text-black w-full py-3 rounded-2xl font-semibold">
+
+              Add Now
+
+            </button>
+
+          </Link>
+
+          <Link
+            to="/vendor/vehicles"
+            className="bg-white rounded-[28px] p-6 shadow-sm hover:-translate-y-1 hover:shadow-2xl transition-all duration-300"
+          >
+
+            <h2 className="text-2xl font-black mb-4">
+
+              My Fleet
+
+            </h2>
+
+            <p className="text-gray-500 mb-6">
+
+              Manage listed vehicles.
+
+            </p>
+
+            <button className="bg-black text-white w-full py-3 rounded-2xl font-semibold">
+
+              Manage Fleet
+
+            </button>
+
+          </Link>
+
+          <Link
+            to="/vendor/bookings"
+            className="bg-lime-100 rounded-[28px] p-6 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300"
+          >
+
+            <h2 className="text-2xl font-black mb-4">
+
+              Bookings
+
+            </h2>
+
+            <p className="text-gray-700 mb-6">
+
+              Manage customer reservations.
+
+            </p>
+
+            <button className="bg-black text-white w-full py-3 rounded-2xl font-semibold">
+
+              View Bookings
+
+            </button>
+
+          </Link>
+
+        </div>
+
+      </main>
 
     </div>
   );

@@ -1,139 +1,215 @@
-import { Link } from "react-router-dom";
+// vendorsidebar.jsx
+
+import {
+  Link,
+  useLocation,
+} from "react-router-dom";
+
+import {
+  LayoutDashboard,
+  CarFront,
+  PlusCircle,
+  BookOpen,
+  X,
+  House,
+} from "lucide-react";
 
 import useAuth from "../../features/auth/useAuth";
 
-const VendorSidebar = () => {
+const VendorSidebar = ({
+  sidebarOpen,
+  setSidebarOpen,
+}) => {
 
-  const { user } = useAuth();
+  const { user } =
+    useAuth();
+
+  const location =
+    useLocation();
+
+  const navLinks = [
+
+    {
+      name: "Vendor Home",
+      path: "/",
+      icon: <House size={20} />,
+    },
+
+    {
+      name: "Dashboard",
+      path: "/vendor/dashboard",
+      icon: <LayoutDashboard size={20} />,
+    },
+
+    {
+      name: "My Vehicles",
+      path: "/vendor/vehicles",
+      icon: <CarFront size={20} />,
+    },
+
+    {
+      name: "Add Vehicle",
+      path: "/vendor/add-vehicle",
+      icon: <PlusCircle size={20} />,
+    },
+
+    {
+      name: "Bookings",
+      path: "/vendor/bookings",
+      icon: <BookOpen size={20} />,
+    },
+  ];
 
   return (
 
-    <div className="w-64 h-screen fixed left-0 top-0 bg-black text-white p-5 flex flex-col justify-between">
+    <>
+      {/* overlay */}
+      {
+        sidebarOpen && (
 
-      {/* TOP */}
-      <div>
+          <div
+            onClick={() =>
+              setSidebarOpen(false)
+            }
+            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+          />
+        )
+      }
 
-        {/* LOGO */}
-        <div className="mb-12">
+      <div
+        className={`fixed top-0 left-0 h-screen w-[280px] bg-black text-white p-5 flex flex-col justify-between z-50 transition-all duration-300 ${
+          sidebarOpen
+            ? "translate-x-0"
+            : "-translate-x-full lg:translate-x-0"
+        }`}
+      >
 
-          <h1 className="text-4xl font-black tracking-wide">
+        <div>
 
-            URBAN
-            <span className="text-lime-400">
+          <div className="flex items-center justify-between mb-10">
 
-              RIDE
+            <div>
 
-            </span>
+              <h1 className="text-3xl sm:text-4xl font-black tracking-wide">
 
-          </h1>
+                URBAN
+                <span className="text-lime-400">
 
-          <p className="text-gray-400 mt-2">
+                  RIDE
 
-            Vendor Dashboard
+                </span>
 
-          </p>
+              </h1>
+
+              <p className="text-gray-400 mt-1 text-sm">
+
+                Vendor Dashboard
+
+              </p>
+
+            </div>
+
+            <button
+              onClick={() =>
+                setSidebarOpen(false)
+              }
+              className="lg:hidden"
+            >
+
+              <X size={24} />
+
+            </button>
+
+          </div>
+
+          <nav className="flex flex-col gap-3">
+
+            {
+              navLinks.map(
+                (link) => (
+
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    onClick={() =>
+                      setSidebarOpen(false)
+                    }
+                    className={`flex items-center gap-3 px-5 py-4 rounded-2xl font-medium transition-all duration-300 ${
+                      location.pathname ===
+                      link.path
+                        ? "bg-lime-400 text-black"
+                        : "bg-white/5 hover:bg-lime-400 hover:text-black"
+                    }`}
+                  >
+
+                    {link.icon}
+
+                    {link.name}
+
+                  </Link>
+                )
+              )
+            }
+
+          </nav>
 
         </div>
 
-        {/* NAVIGATION */}
-        <nav className="flex flex-col gap-4">
+        <div className="bg-white/5 border border-white/10 rounded-[30px] p-5 mt-10">
 
-          <Link
-            to="/vendor/dashboard"
-            className="bg-white/5 hover:bg-lime-400 hover:text-black transition px-5 py-4 rounded-2xl font-medium"
-          >
+          <div className="flex items-center gap-4 mb-5">
 
-            Dashboard
-
-          </Link>
-
-          <Link
-            to="/vendor/vehicles"
-            className="bg-white/5 hover:bg-lime-400 hover:text-black transition px-5 py-4 rounded-2xl font-medium"
-          >
-
-            My Vehicles
-
-          </Link>
-
-          <Link
-            to="/vendor/add-vehicle"
-            className="bg-white/5 hover:bg-lime-400 hover:text-black transition px-5 py-4 rounded-2xl font-medium"
-          >
-
-            Add Vehicle
-
-          </Link>
-
-          <Link
-            to="/vendor/bookings"
-            className="bg-white/5 hover:bg-lime-400 hover:text-black transition px-5 py-4 rounded-2xl font-medium"
-          >
-
-            Bookings
-
-          </Link>
-
-        </nav>
-
-      </div>
-
-      {/* BOTTOM PROFILE CARD */}
-      <div className="bg-white/5 border border-white/10 rounded-[30px] p-5 mt-10">
-
-        {/* PROFILE */}
-        <div className="flex items-center gap-4 mb-5">
-
-          <img
-            src={
-              user?.profilePicture ||
-              "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            }
-            alt="Vendor"
-            className="w-16 h-16 rounded-2xl object-cover"
-          />
-
-          <div>
-
-            <h2 className="text-xl font-bold">
-
-              {
-                user?.username ||
-                "Vendor"
+            <img
+              src={
+                user?.profilePicture ||
+                "https://cdn-icons-png.flaticon.com/512/149/149071.png"
               }
+              alt="Vendor"
+              className="w-16 h-16 rounded-2xl object-cover"
+            />
 
-            </h2>
+            <div>
 
-            <p className="text-gray-400 text-sm">
+              <h2 className="text-lg font-bold">
 
-              Premium Partner
+                {
+                  user?.username ||
+                  "Vendor"
+                }
+
+              </h2>
+
+              <p className="text-gray-400 text-sm">
+
+                Premium Partner
+
+              </p>
+
+            </div>
+
+          </div>
+
+          <div className="bg-lime-400 rounded-2xl p-4 text-black">
+
+            <p className="text-sm font-medium">
+
+              Vendor Status
 
             </p>
+
+            <h3 className="text-2xl font-black">
+
+              Active
+
+            </h3>
 
           </div>
 
         </div>
 
-        {/* STATUS */}
-        <div className="bg-lime-400 rounded-2xl p-4 text-black">
-
-          <p className="text-sm font-medium">
-
-            Vendor Status
-
-          </p>
-
-          <h3 className="text-2xl font-black">
-
-            Active
-
-          </h3>
-
-        </div>
-
       </div>
 
-    </div>
+    </>
   );
 };
 

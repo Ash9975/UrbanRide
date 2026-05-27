@@ -44,8 +44,8 @@ const Login = () => {
           formData,
           selectedRole
         );
-
-      console.log(data);
+      console.log("LOGIN RESPONSE:", data);
+      console.log("LOGIN USER:", data.user);
 
       login(data);
 
@@ -58,13 +58,9 @@ const Login = () => {
           "/admin/dashboard"
         );
 
-      } else if (
-        selectedRole === "vendor"
-      ) {
+      } else if (selectedRole === "vendor") {
 
-        navigate(
-          "/vendor/dashboard"
-        );
+        navigate("/vendor/dashboard");
 
       } else {
 
@@ -265,8 +261,8 @@ const Login = () => {
                   setSelectedRole("user");
                 }}
                 className={`py-4 rounded-2xl font-semibold transition-all duration-300 ${selectedRole === "user"
-                    ? "bg-black text-white"
-                    : "bg-gray-100 text-black"
+                  ? "bg-black text-white"
+                  : "bg-gray-100 text-black"
                   }`}
               >
 
@@ -284,8 +280,8 @@ const Login = () => {
                   setSelectedRole("vendor");
                 }}
                 className={`py-4 rounded-2xl font-semibold transition-all duration-300 ${selectedRole === "vendor"
-                    ? "bg-lime-400 text-black"
-                    : "bg-gray-100 text-black"
+                  ? "bg-lime-400 text-black"
+                  : "bg-gray-100 text-black"
                   }`}
               >
 

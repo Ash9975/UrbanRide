@@ -9,23 +9,46 @@ const VendorPrivateRoute = () => {
 
   const { user } = useAuth();
 
+  // LOADING
+  if (user === undefined) {
+
+    return (
+
+      <div className="min-h-screen flex items-center justify-center text-3xl font-bold">
+
+        Loading...
+
+      </div>
+    );
+  }
+
   // NOT LOGGED IN
   if (!user) {
 
     return (
-      <Navigate to="/login" />
+      <Navigate
+        to="/login"
+        replace
+      />
     );
   }
 
   // NOT VENDOR
-  if (user.role !== "vendor") {
+  const isVendor =
+    user?.isVendor ||
+    user?.role === "vendor";
+
+  if (!isVendor) {
 
     return (
-      <Navigate to="/" />
+      <Navigate
+        to="/"
+        replace
+      />
     );
   }
 
-  // ALLOWED
+  // ACCESS ALLOWED
   return <Outlet />;
 };
 

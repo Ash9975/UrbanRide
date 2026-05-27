@@ -133,168 +133,136 @@ const VehicleDetails = () => {
   }
 
   return (
+  <div className="min-h-screen bg-[#f5f5f7]">
 
-    <div className="min-h-screen bg-[#f3f3f5] p-6">
+    {/* HERO SECTION */}
+    <div className="relative w-full h-[320px] sm:h-[450px] lg:h-[650px] overflow-hidden">
 
-      {/* HERO IMAGE */}
-      <div className="relative overflow-hidden rounded-[40px] shadow-2xl mb-10">
+      <img
+        src={vehicle.images?.[0]}
+        alt={vehicle.title}
+        className="w-full h-full object-cover"
+      />
 
-        <img
-          src={vehicle.images?.[0]}
-          alt={vehicle.title}
-          className="w-full h-[650px] object-cover"
-        />
+      {/* OVERLAY */}
+      <div className="absolute inset-0 bg-black/50" />
 
-        {/* OVERLAY */}
-        <div className="absolute inset-0 bg-black/30" />
+      {/* CONTENT */}
+      <div className="absolute bottom-6 left-6 sm:bottom-10 sm:left-10 text-white max-w-3xl">
 
-        {/* CONTENT */}
-        <div className="absolute bottom-10 left-10 text-white max-w-3xl">
+        <p className="text-lime-400 uppercase tracking-[3px] text-xs sm:text-sm font-semibold mb-3">
 
-          <p className="text-lime-400 uppercase tracking-[5px] font-semibold mb-5">
+          Premium Luxury Vehicle
 
-            Premium Luxury Vehicle
+        </p>
 
-          </p>
+        <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black leading-tight mb-3">
 
-          <h1 className="text-6xl md:text-8xl font-black leading-tight mb-5">
+          {vehicle.title}
 
-            {vehicle.title}
+        </h1>
 
-          </h1>
+        <p className="text-base sm:text-xl text-gray-200">
 
-          <p className="text-2xl text-gray-200">
+          {vehicle.company} {vehicle.model}
 
-            {vehicle.company}
-            {" "}
-            {vehicle.model}
-
-          </p>
-
-        </div>
-
-        {/* PRICE BADGE */}
-        <div className="absolute top-8 right-8 bg-black/80 backdrop-blur-md px-8 py-5 rounded-3xl text-white shadow-lg">
-
-          <p className="text-gray-300 text-sm mb-2">
-
-            Price Per Day
-
-          </p>
-
-          <h2 className="text-5xl font-black">
-
-            ₹ {vehicle.price}
-
-          </h2>
-
-        </div>
+        </p>
 
       </div>
 
-      {/* DETAILS GRID */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+      {/* PRICE */}
+      <div className="absolute top-5 right-5 bg-black/80 backdrop-blur-md px-5 py-4 rounded-2xl text-white shadow-xl">
 
-        {/* LEFT DETAILS */}
+        <p className="text-gray-300 text-xs sm:text-sm mb-1">
+
+          Price Per Day
+
+        </p>
+
+        <h2 className="text-2xl sm:text-4xl font-black">
+
+          ₹ {vehicle.price}
+
+        </h2>
+
+      </div>
+    </div>
+
+    {/* MAIN CONTAINER */}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        {/* LEFT SIDE */}
         <div className="lg:col-span-2 space-y-8">
 
           {/* VEHICLE INFO */}
-          <div className="bg-white rounded-[35px] p-8 shadow-sm">
+          <div className="bg-white rounded-3xl p-5 sm:p-8 shadow-sm border border-gray-100">
 
-            <h2 className="text-4xl font-black mb-8">
+            <h2 className="text-2xl sm:text-4xl font-black mb-6">
 
               Vehicle Information
 
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-              {/* FUEL */}
-              <div className="bg-[#f5f5f7] rounded-3xl p-6">
-
-                <p className="text-gray-500 mb-2">
-
+              <div className="bg-[#f5f5f7] rounded-2xl p-5">
+                <p className="text-gray-500 text-sm mb-2">
                   Fuel Type
-
                 </p>
 
-                <h3 className="text-3xl font-black">
-
+                <h3 className="text-2xl font-black capitalize">
                   {vehicle.fuelType}
-
                 </h3>
-
               </div>
 
-              {/* SEATS */}
-              <div className="bg-[#f5f5f7] rounded-3xl p-6">
-
-                <p className="text-gray-500 mb-2">
-
+              <div className="bg-[#f5f5f7] rounded-2xl p-5">
+                <p className="text-gray-500 text-sm mb-2">
                   Seating Capacity
-
                 </p>
 
-                <h3 className="text-3xl font-black">
-
+                <h3 className="text-2xl font-black">
                   {vehicle.seats}
-
                 </h3>
-
               </div>
 
-              {/* LOCATION */}
-              <div className="bg-lime-100 rounded-3xl p-6">
-
-                <p className="text-gray-700 mb-2">
-
+              <div className="bg-lime-100 rounded-2xl p-5">
+                <p className="text-gray-700 text-sm mb-2">
                   Location
-
                 </p>
 
-                <h3 className="text-3xl font-black">
-
+                <h3 className="text-2xl font-black">
                   {vehicle.location}
-
                 </h3>
-
               </div>
 
-              {/* DISTRICT */}
-              <div className="bg-black text-white rounded-3xl p-6">
-
-                <p className="text-gray-300 mb-2">
-
+              <div className="bg-black text-white rounded-2xl p-5">
+                <p className="text-gray-300 text-sm mb-2">
                   District
-
                 </p>
 
-                <h3 className="text-3xl font-black">
-
+                <h3 className="text-2xl font-black">
                   {vehicle.district}
-
                 </h3>
-
               </div>
 
             </div>
-
           </div>
 
           {/* DESCRIPTION */}
-          <div className="bg-white rounded-[35px] p-8 shadow-sm">
+          <div className="bg-white rounded-3xl p-5 sm:p-8 shadow-sm border border-gray-100">
 
-            <h2 className="text-4xl font-black mb-6">
+            <h2 className="text-2xl sm:text-4xl font-black mb-5">
 
               About This Vehicle
 
             </h2>
 
-            <p className="text-gray-500 leading-relaxed text-lg">
+            <p className="text-gray-600 leading-8 text-base sm:text-lg">
 
-              {
-                vehicle.description
-              }
+              {vehicle.description ||
+                "Experience luxury driving with premium comfort, smooth performance, and high-end safety features. Perfect for city rides, family trips, and business travel."}
 
             </p>
 
@@ -306,96 +274,71 @@ const VehicleDetails = () => {
         <div className="space-y-8">
 
           {/* BOOKING CARD */}
-          <div className="bg-black text-white rounded-[35px] p-8 shadow-2xl sticky top-5">
+          <div className="bg-black text-white rounded-3xl p-5 sm:p-7 shadow-2xl lg:sticky lg:top-5">
 
-            <p className="text-lime-400 uppercase tracking-[4px] font-semibold mb-4">
+            <p className="text-lime-400 uppercase tracking-[3px] text-xs sm:text-sm font-semibold mb-3">
 
               Book Luxury Ride
 
             </p>
 
-            <h2 className="text-5xl font-black mb-4">
+            <h2 className="text-3xl sm:text-5xl font-black mb-3">
 
               ₹ {vehicle.price}
 
             </h2>
 
-            <p className="text-gray-300 mb-8">
+            <p className="text-gray-300 mb-6 text-sm sm:text-base">
 
-              Premium rental price
-              per day.
+              Premium rental price per day.
 
             </p>
 
-            {/* BOOKING FORM */}
             <BookingForm
-              vehicleId={
-                vehicle._id
-              }
+              vehicleId={vehicle._id}
             />
 
           </div>
 
-          {/* PREMIUM FEATURES */}
-          <div className="bg-white rounded-[35px] p-8 shadow-sm">
+          {/* FEATURES */}
+          <div className="bg-white rounded-3xl p-5 sm:p-7 shadow-sm border border-gray-100">
 
-            <h2 className="text-3xl font-black mb-6">
+            <h2 className="text-2xl sm:text-3xl font-black mb-6">
 
               Premium Features
 
             </h2>
 
-            <div className="space-y-5">
+            <div className="space-y-4">
 
               <div className="bg-[#f5f5f7] rounded-2xl p-5">
-
-                <h3 className="font-bold text-xl mb-2">
-
+                <h3 className="font-bold text-lg mb-2">
                   Luxury Interior
-
                 </h3>
 
-                <p className="text-gray-500">
-
-                  Comfortable premium
-                  seating experience.
-
+                <p className="text-gray-500 text-sm leading-6">
+                  Comfortable premium seating and spacious interior experience.
                 </p>
-
               </div>
 
               <div className="bg-[#f5f5f7] rounded-2xl p-5">
-
-                <h3 className="font-bold text-xl mb-2">
-
+                <h3 className="font-bold text-lg mb-2">
                   Secure Booking
-
                 </h3>
 
-                <p className="text-gray-500">
-
-                  Safe and verified
-                  rental platform.
-
+                <p className="text-gray-500 text-sm leading-6">
+                  Safe and verified rental booking platform.
                 </p>
-
               </div>
 
               <div className="bg-lime-100 rounded-2xl p-5">
-
-                <h3 className="font-bold text-xl mb-2">
-
+                <h3 className="font-bold text-lg mb-2">
                   Premium Support
-
                 </h3>
 
-                <p className="text-gray-700">
-
-                  24/7 assistance for
-                  customers and vendors.
-
+                <p className="text-gray-700 text-sm leading-6">
+                  24/7 assistance for customers and vendors.
                 </p>
-
               </div>
 
             </div>
@@ -407,7 +350,9 @@ const VehicleDetails = () => {
       </div>
 
     </div>
-  );
+
+  </div>
+);
 };
 
 export default VehicleDetails;

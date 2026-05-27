@@ -1,3 +1,5 @@
+// vendortopbar.jsx
+import useAuth from "../../features/auth/useAuth";
 import {
   Link,
   useLocation,
@@ -8,9 +10,12 @@ import {
   Bell,
   LogOut,
   House,
+  Menu,
 } from "lucide-react";
 
-const VendorTopbar = () => {
+const VendorTopbar = ({
+  setSidebarOpen,
+}) => {
 
   const navigate =
     useNavigate();
@@ -18,83 +23,79 @@ const VendorTopbar = () => {
   const location =
     useLocation();
 
-  const user =
-    JSON.parse(
-      localStorage.getItem(
-        "currentUser"
-      )
-    );
+  const {
+    user,
+    logout,
+  } = useAuth();
 
   const handleLogout = () => {
 
-    localStorage.removeItem(
-      "currentUser"
-    );
-
-    localStorage.removeItem(
-      "token"
-    );
+    logout();
 
     navigate("/login");
   };
 
+  const currentPage =
+    location.pathname
+      .split("/")
+      .pop()
+      .replace("-", " ");
+
   return (
 
-    <div className="bg-white border-b border-gray-200 px-8 py-5 flex items-center justify-between sticky top-0 z-40">
+    <div className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between sticky top-0 z-40">
 
-      {/* LEFT */}
-      <div>
+      <div className="flex items-center gap-4">
 
-        <p className="text-gray-500 text-sm">
+        <button
+          className="lg:hidden w-12 h-12 rounded-2xl bg-[#f5f5f5] flex items-center justify-center"
+        >
+          <Menu size={22} />
+        </button>
 
-          Vendor Panel
+        <div>
 
-        </p>
+          <p className="text-gray-500 text-xs sm:text-sm">
 
-        <h1 className="text-3xl font-black">
+            Vendor Panel
 
-          {
-            location.pathname
-              .split("/")
-              .pop()
-              .replace("-", " ")
-              .toUpperCase()
-          }
+          </p>
 
-        </h1>
+          <h1 className="text-xl sm:text-3xl font-black capitalize">
+
+            {currentPage}
+
+          </h1>
+
+        </div>
 
       </div>
 
-      {/* RIGHT */}
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-3 sm:gap-5">
 
-        {/* HOME */}
         <Link
           to="/"
-          className="w-14 h-14 rounded-2xl bg-[#f5f5f5] flex items-center justify-center hover:bg-lime-100 transition"
+          className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-[#f5f5f5] flex items-center justify-center hover:bg-lime-100 transition"
         >
 
-          <House size={24} />
+          <House size={22} />
 
         </Link>
 
-        {/* NOTIFICATION */}
         <button
-          className="w-14 h-14 rounded-2xl bg-[#f5f5f5] flex items-center justify-center hover:bg-lime-100 transition"
+          className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-[#f5f5f5] flex items-center justify-center hover:bg-lime-100 transition"
         >
 
-          <Bell size={24} />
+          <Bell size={22} />
 
         </button>
 
-
-        {/* LOGOUT */}
         <button
           onClick={handleLogout}
-          className="w-14 h-14 rounded-2xl bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition"
+          className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition"
         >
 
-          <LogOut size={22} />
+          <LogOut size={20} />
 
         </button>
 

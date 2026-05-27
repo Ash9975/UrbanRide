@@ -5,6 +5,42 @@ const Profile = () => {
   const { user } =
     useAuth();
 
+  // loading
+  if (user === undefined) {
+
+    return (
+
+      <div className="min-h-screen flex items-center justify-center text-3xl font-bold">
+
+        Loading...
+
+      </div>
+    );
+  }
+
+  // not logged in
+  if (!user) {
+
+    return (
+
+      <div className="min-h-screen flex items-center justify-center text-3xl font-bold text-red-500">
+
+        User Not Found
+
+      </div>
+    );
+  }
+
+  const role =
+    user?.role ||
+    (user?.isVendor
+      ? "vendor"
+      : user?.isAdmin
+        ? "admin"
+        : "user");
+
+
+
   return (
 
     <div className="min-h-screen bg-[#f3f3f5] py-10">
@@ -73,7 +109,7 @@ const Profile = () => {
 
                     <h3 className="font-bold text-xl capitalize">
 
-                      {user?.role}
+                      {role}
 
                     </h3>
 
@@ -91,9 +127,9 @@ const Profile = () => {
                     <h3 className="font-bold text-xl">
 
                       {
-                        user?.role === "vendor"
+                        role === "vendor"
                           ? "Vendor Partner"
-                          : user?.role === "admin"
+                          : role === "admin"
                             ? "Platform Admin"
                             : "Premium User"
                       }
@@ -113,7 +149,7 @@ const Profile = () => {
 
               {/* USER ROLE */}
               {
-                user?.role === "user" && (
+                role === "user" && (
                   <>
 
                     <div className="bg-black text-white rounded-3xl p-6 w-48">
@@ -154,7 +190,7 @@ const Profile = () => {
 
               {/* VENDOR ROLE */}
               {
-                user?.role === "vendor" && (
+                role === "vendor" && (
                   <>
 
                     <div className="bg-black text-white rounded-3xl p-6 w-48">
@@ -195,7 +231,7 @@ const Profile = () => {
 
               {/* ADMIN ROLE */}
               {
-                user?.role === "admin" && (
+                role === "admin" && (
                   <>
 
                     <div className="bg-black text-white rounded-3xl p-6 w-48">
@@ -299,7 +335,7 @@ const Profile = () => {
 
                 <h3 className="text-2xl font-bold capitalize">
 
-                  {user?.role}
+                  {role}
 
                 </h3>
 
@@ -331,7 +367,7 @@ const Profile = () => {
 
             {/* USER */}
             {
-              user?.role === "user" && (
+              role === "user" && (
                 <>
                   <p className="uppercase tracking-[4px] text-lime-400 font-semibold mb-5">
 
@@ -358,7 +394,7 @@ const Profile = () => {
 
             {/* VENDOR */}
             {
-              user?.role === "vendor" && (
+              role === "vendor" && (
                 <>
                   <p className="uppercase tracking-[4px] text-lime-400 font-semibold mb-5">
 
@@ -385,7 +421,7 @@ const Profile = () => {
 
             {/* ADMIN */}
             {
-              user?.role === "admin" && (
+              role === "admin" && (
                 <>
                   <p className="uppercase tracking-[4px] text-lime-400 font-semibold mb-5">
 

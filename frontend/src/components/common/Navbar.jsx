@@ -8,12 +8,17 @@ import { useState } from "react";
 import {
   Menu,
   X,
+  Bell,
   LayoutDashboard,
+  CarFront,
+  BookOpen,
+  User,
+  LogOut,
+  ChartNoAxesCombined,
 } from "lucide-react";
 
 const Navbar = ({
   user,
-  isVendor,
   handleLogout,
 }) => {
 
@@ -24,6 +29,11 @@ const Navbar = ({
     mobileMenu,
     setMobileMenu,
   ] = useState(false);
+
+  // role check
+  const isVendor =
+    user?.isVendor ||
+    user?.role === "vendor";
 
   return (
 
@@ -41,7 +51,7 @@ const Navbar = ({
               className="flex items-center gap-2 group"
             >
 
-              <h1 className="text-xl sm:text-3xl font-black tracking-tight transition-all duration-300 group-hover:scale-[1.02]">
+              <h1 className="text-2xl sm:text-3xl font-black tracking-tight transition-all duration-300 group-hover:scale-[1.02]">
 
                 <span className="text-black">
 
@@ -59,16 +69,21 @@ const Navbar = ({
 
             </Link>
 
-            {/* desktop nav links */}
+            {/* desktop nav */}
             <div className="hidden lg:flex items-center gap-8">
 
+              {/* common */}
               <Link
-                to="/"
-                className={`font-semibold transition-all duration-300 ${
-                  location.pathname === "/"
-                    ? "text-black"
-                    : "text-gray-500 hover:text-black"
-                }`}
+                to={
+                  isVendor
+                    ? "/vendor/dashboard"
+                    : "/"
+                }
+                className={`font-semibold transition-all duration-300 ${location.pathname === "/" ||
+                  location.pathname === "/vendor/dashboard"
+                  ? "text-black"
+                  : "text-gray-500 hover:text-black"
+                  }`}
               >
 
                 Home
@@ -76,28 +91,31 @@ const Navbar = ({
               </Link>
 
               <Link
-                to="/vehicles"
-                className={`font-semibold transition-all duration-300 ${
-                  location.pathname === "/vehicles"
-                    ? "text-black"
-                    : "text-gray-500 hover:text-black"
-                }`}
+                to={
+                  isVendor
+                    ? "/vendor/vehicles"
+                    : "/vehicles"
+                }
+                className={`font-semibold transition-all duration-300 ${location.pathname.includes("vehicles")
+                  ? "text-black"
+                  : "text-gray-500 hover:text-black"
+                  }`}
               >
 
                 Vehicles
 
               </Link>
 
+              {/* user nav */}
               {
-                user && user._id && (
+                !isVendor && (
 
                   <Link
                     to="/bookings"
-                    className={`font-semibold transition-all duration-300 ${
-                      location.pathname === "/bookings"
-                        ? "text-black"
-                        : "text-gray-500 hover:text-black"
-                    }`}
+                    className={`font-semibold transition-all duration-300 ${location.pathname === "/bookings"
+                      ? "text-black"
+                      : "text-gray-500 hover:text-black"
+                      }`}
                   >
 
                     My Bookings
@@ -106,54 +124,64 @@ const Navbar = ({
                 )
               }
 
+              {/* vendor nav */}
               {
                 isVendor && (
+                  <>
+                    <Link
+                      to="/vendor/dashboard"
+                      className={`font-semibold transition-all duration-300 ${location.pathname.includes("/vendor/dashboard")
+                        ? "text-lime-600"
+                        : "text-gray-500 hover:text-black"
+                        }`}
+                    >
 
-                  <Link
-                    to="/vendor/dashboard"
-                    className="flex items-center gap-2 bg-lime-100 text-lime-700 px-5 py-2 rounded-2xl font-semibold hover:bg-lime-200 transition-all duration-300"
-                  >
+                      Dashboard
 
-                    <LayoutDashboard size={18} />
+                    </Link>
 
-                    Vendor Panel
+                    <Link
+                      to="/vendor/bookings"
+                      className={`font-semibold transition-all duration-300 ${location.pathname.includes("/vendor/bookings")
+                        ? "text-lime-600"
+                        : "text-gray-500 hover:text-black"
+                        }`}
+                    >
 
-                  </Link>
+                      Bookings
+
+                    </Link>
+                  </>
                 )
               }
 
             </div>
 
-            {/* right side */}
+            {/* right section */}
             <div className="flex items-center gap-3">
 
-              {/* mobile login button */}
-              {
-                !user && (
-
-                  <Link
-                    to="/login"
-                    className="lg:hidden bg-black text-white px-5 py-2.5 rounded-2xl text-sm font-semibold shadow-sm hover:bg-gray-900 transition-all duration-300"
-                  >
-
-                    Login
-
-                  </Link>
-                )
-              }
-
-              {/* desktop profile/login */}
+              {/* desktop auth */}
               <div className="hidden lg:flex items-center gap-3">
 
                 {
-                  user && user._id ? (
+                  user ? (
 
                     <>
+                      {/* notification */}
+                      <button className="w-12 h-12 rounded-2xl bg-gray-100 hover:bg-lime-100 flex items-center justify-center transition-all duration-300">
+
+                        <Bell size={20} />
+
+                      </button>
 
                       {/* profile */}
                       <Link
-                        to="/profile"
-                        className="flex items-center gap-3 bg-white border border-gray-100 px-3 py-2 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300"
+                        to={
+                          isVendor
+                            ? "/vendor/profile"
+                            : "/profile"
+                        }
+                        className="flex items-center gap-3 bg-white border border-gray-100 px-3 py-2 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300"
                       >
 
                         <img
@@ -173,11 +201,23 @@ const Navbar = ({
 
                           </p>
 
-                          <h3 className="font-bold text-sm text-black">
+                          <div className="flex items-center gap-2">
 
-                            {user.username}
+                            <h3 className="font-bold text-sm text-black">
 
-                          </h3>
+                              {user.username}
+
+                            </h3>
+
+                            <span className="text-[10px] px-2 py-1 rounded-full bg-lime-100 text-lime-700 font-semibold uppercase">
+
+                              {
+                                isVendor? "Vendor" : "User"
+                              }
+
+                            </span>
+
+                          </div>
 
                         </div>
 
@@ -194,7 +234,6 @@ const Navbar = ({
                       </button>
 
                     </>
-
                   ) : (
 
                     <Link
@@ -210,7 +249,7 @@ const Navbar = ({
 
               </div>
 
-              {/* hamburger button */}
+              {/* mobile hamburger */}
               <button
                 onClick={() =>
                   setMobileMenu(
@@ -238,16 +277,54 @@ const Navbar = ({
 
       {/* mobile menu */}
       <div
-        className={`lg:hidden fixed top-[80px] left-0 w-full transition-all duration-300 ease-in-out z-40 ${
-          mobileMenu
-            ? "opacity-100 visible translate-y-0"
-            : "opacity-0 invisible -translate-y-5"
-        }`}
+        className={`lg:hidden fixed top-[72px] left-0 w-full z-40 transition-all duration-300 ${mobileMenu
+          ? "opacity-100 visible translate-y-0"
+          : "opacity-0 invisible -translate-y-5"
+          }`}
       >
 
         <div className="mx-4 rounded-[30px] bg-white/95 backdrop-blur-2xl shadow-2xl border border-gray-100 overflow-hidden">
 
-          <div className="p-6 space-y-6">
+          <div className="p-6 space-y-5">
+
+            {/* user profile */}
+            {
+              user && (
+
+                <div className="flex items-center gap-4 pb-5 border-b">
+
+                  <img
+                    src={
+                      user?.profilePicture ||
+                      "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                    }
+                    alt="profile"
+                    className="w-14 h-14 rounded-2xl object-cover"
+                  />
+
+                  <div>
+
+                    <h3 className="font-bold text-lg">
+
+                      {user.username}
+
+                    </h3>
+
+                    <span className="text-xs px-3 py-1 rounded-full bg-lime-100 text-lime-700 font-semibold uppercase">
+
+                      {
+                        isVendor
+                          ? "Vendor"
+                          : "User"
+                      }
+
+                    </span>
+
+                  </div>
+
+                </div>
+              )
+            }
 
             {/* nav links */}
             <Link
@@ -255,8 +332,10 @@ const Navbar = ({
               onClick={() =>
                 setMobileMenu(false)
               }
-              className="block text-lg font-semibold text-gray-700 hover:text-black transition"
+              className="flex items-center gap-3 text-lg font-semibold text-gray-700 hover:text-black transition"
             >
+
+              <LayoutDashboard size={20} />
 
               Home
 
@@ -267,23 +346,28 @@ const Navbar = ({
               onClick={() =>
                 setMobileMenu(false)
               }
-              className="block text-lg font-semibold text-gray-700 hover:text-black transition"
+              className="flex items-center gap-3 text-lg font-semibold text-gray-700 hover:text-black transition"
             >
+
+              <CarFront size={20} />
 
               Vehicles
 
             </Link>
 
+            {/* user menu */}
             {
-              user && user._id && (
+              !isVendor && (
 
                 <Link
                   to="/bookings"
                   onClick={() =>
                     setMobileMenu(false)
                   }
-                  className="block text-lg font-semibold text-gray-700 hover:text-black transition"
+                  className="flex items-center gap-3 text-lg font-semibold text-gray-700 hover:text-black transition"
                 >
+
+                  <BookOpen size={20} />
 
                   My Bookings
 
@@ -291,63 +375,92 @@ const Navbar = ({
               )
             }
 
+            {/* vendor menu */}
             {
               isVendor && (
+                <>
+                  <Link
+                    to="/vendor/dashboard"
+                    onClick={() =>
+                      setMobileMenu(false)
+                    }
+                    className="flex items-center gap-3 text-lg font-semibold text-lime-600"
+                  >
 
-                <Link
-                  to="/vendor/dashboard"
-                  onClick={() =>
-                    setMobileMenu(false)
-                  }
-                  className="block text-lg font-semibold text-lime-600"
-                >
+                    <LayoutDashboard size={20} />
 
-                  Vendor Panel
+                    Dashboard
 
-                </Link>
+                  </Link>
+
+                  <Link
+                    to="/vendor/vehicles"
+                    onClick={() =>
+                      setMobileMenu(false)
+                    }
+                    className="flex items-center gap-3 text-lg font-semibold text-gray-700 hover:text-black"
+                  >
+
+                    <CarFront size={20} />
+
+                    Listed Vehicles
+
+                  </Link>
+
+                  <Link
+                    to="/vendor/bookings"
+                    onClick={() =>
+                      setMobileMenu(false)
+                    }
+                    className="flex items-center gap-3 text-lg font-semibold text-gray-700 hover:text-black"
+                  >
+
+                    <BookOpen size={20} />
+
+                    Booking History
+
+                  </Link>
+
+                  <Link
+                    to="/vendor/analytics"
+                    onClick={() =>
+                      setMobileMenu(false)
+                    }
+                    className="flex items-center gap-3 text-lg font-semibold text-gray-700 hover:text-black"
+                  >
+
+                    <ChartNoAxesCombined size={20} />
+
+                    Analytics
+
+                  </Link>
+                </>
               )
             }
 
-            {/* mobile auth section */}
-            <div className="pt-4 border-t">
+            {/* auth */}
+            <div className="pt-5 border-t">
 
               {
-                user && user._id ? (
+                user ? (
 
                   <div className="space-y-4">
 
                     <Link
-                      to="/profile"
+                      to={
+                        isVendor
+                          ? "/vendor/profile"
+                          : "/profile"
+                      }
                       onClick={() =>
                         setMobileMenu(false)
                       }
-                      className="flex items-center gap-4"
+                      className="flex items-center gap-3 text-lg font-semibold text-gray-700"
                     >
 
-                      <img
-                        src={
-                          user?.profilePicture ||
-                          "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                        }
-                        alt="profile"
-                        className="w-14 h-14 rounded-2xl object-cover"
-                      />
+                      <User size={20} />
 
-                      <div>
-
-                        <p className="text-sm text-gray-500">
-
-                          Welcome
-
-                        </p>
-
-                        <h3 className="font-bold text-lg">
-
-                          {user.username}
-
-                        </h3>
-
-                      </div>
+                      Profile
 
                     </Link>
 
@@ -356,8 +469,10 @@ const Navbar = ({
                         handleLogout();
                         setMobileMenu(false);
                       }}
-                      className="w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-2xl font-semibold transition-all duration-300"
+                      className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white py-4 rounded-2xl font-semibold transition-all duration-300"
                     >
+
+                      <LogOut size={18} />
 
                       Logout
 

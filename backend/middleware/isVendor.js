@@ -17,7 +17,7 @@ export const isVendor = async (
 
     if (
       !user ||
-      user.role !== "vendor"
+      !user.isVendor
     ) {
 
       return next(

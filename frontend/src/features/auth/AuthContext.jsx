@@ -4,7 +4,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(undefined);
 
   useEffect(() => {
 
@@ -43,18 +43,25 @@ export const AuthProvider = ({ children }) => {
   // LOGIN
   const login = (data) => {
 
-    setUser(data);
+    const {
+      accessToken,
+      refreshToken,
+      ...userData
+    } = data;
+
+    setUser(userData);
 
     localStorage.setItem(
       "user",
-      JSON.stringify(data)
+      JSON.stringify(userData)
     );
 
     localStorage.setItem(
       "token",
-      data.accessToken
+      accessToken
     );
   };
+  
   // LOGOUT
   const logout = () => {
 
