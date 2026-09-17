@@ -1,7 +1,6 @@
 import Booking from "../../models/BookingModel.js";
 import Vehicle from "../../models/vehicleModel.js";
 import { errorHandler } from "../../utils/error.js";
-import nodemailer from "nodemailer";
 
 // book car
 export const BookCar = async (req, res, next) => {
@@ -30,7 +29,6 @@ export const BookCar = async (req, res, next) => {
 
     const vehicle = await Vehicle.findById(vehicleId);
 
-    // ✅ FULL VALIDATION
     if (
       !vehicle ||
       vehicle.isDeleted ||
@@ -40,16 +38,16 @@ export const BookCar = async (req, res, next) => {
       return next(errorHandler(400, "Vehicle not available"));
     }
 
-    // ✅ OVERLAP CHECK
+    // overlap check - only active bookings (pending or approved) block dates
     const overlapping = await Booking.find({
       vehicleId,
-      status: "booked",
+      status: { $in: ["pending", "approved"] },
       pickupDate: { $lt: endDate },
       dropOffDate: { $gt: startDate },
     });
 
     if (overlapping.length > 0) {
-      return next(errorHandler(400, "Vehicle not available"));
+      return next(errorHandler(400, "Vehicle not available for selected dates"));
     }
 
     const booking = await Booking.create({
@@ -60,7 +58,7 @@ export const BookCar = async (req, res, next) => {
       pickUpLocation: pickupLocation,
       dropOffLocation: dropOffLocation,
       totalPrice,
-      status: "booked",
+      status: "pending",
     });
 
     res.status(201).json({
@@ -138,7 +136,7 @@ export const getAvailableVehicles = async (req, res, next) => {
     const endDate = new Date(dropOffDate);
 
     const bookedVehicles = await Booking.find({
-      status: "booked",
+      status: { $in: ["pending", "approved"] },
       pickupDate: { $lt: endDate },
       dropOffDate: { $gt: startDate },
     }).select("vehicleId");
@@ -152,7 +150,6 @@ export const getAvailableVehicles = async (req, res, next) => {
       isRejected: false,
     };
 
-    // ✅ optional filters
     if (district) filter.district = district;
     if (location) filter.location = location;
 
@@ -169,8 +166,6 @@ export const getAvailableVehicles = async (req, res, next) => {
   }
 };
 
-
-
 // Razorpay (future)
 export const razorpayOrder = async (req, res, next) => {
   try {
@@ -181,43 +176,3 @@ export const razorpayOrder = async (req, res, next) => {
     next(errorHandler(500, "Razorpay error"));
   }
 };
-
-// 📧 Send booking email (future)
-// export const sendBookingDetailsEmail = async (req, res, next) => {
-//   try {
-//     const { toEmail, bookingData } = req.body;
-
-//     const transporter = nodemailer.createTransport({
-//       service: "gmail",
-//       auth: {
-//         user: process.env.EMAIL_HOST,
-//         pass: process.env.EMAIL_PASSWORD,
-//       },
-//     });
-
-//     const mailOptions = {
-//       from: process.env.EMAIL_HOST,
-//       to: toEmail,
-//       subject: "Booking Details",
-//       text: "Your booking is confirmed!",
-//     };
-
-//     await transporter.sendMail(mailOptions);
-
-//     res.status(200).json({ message: "Email sent successfully" });
-
-//   } catch (error) {
-//     next(errorHandler(500, "Email sending failed"));
-//   }
-// };
-
-// Advanced filtering (future)
-// export const filterVehicles = async (req, res, next) => {
-//   try {
-//     return res.status(200).json({
-//       message: "Advanced filtering coming soon",
-//     });
-//   } catch (error) {
-//     next(errorHandler(500, "Filter error"));
-//   }
-// };

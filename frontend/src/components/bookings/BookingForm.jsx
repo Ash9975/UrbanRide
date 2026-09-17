@@ -14,7 +14,6 @@ const BookingForm = ({ vehicleId }) => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -22,111 +21,117 @@ const BookingForm = ({ vehicleId }) => {
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     try {
-
       setLoading(true);
 
-      // SIMPLE TEMP PRICE
-      const totalPrice = 3000;
+      // Calculate price based on days
+      const start = new Date(formData.pickupDate);
+      const end = new Date(formData.dropOffDate);
+      const days = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
+      const totalPrice = days * 3000;
 
       const bookingData = {
-
         vehicleId,
-
         pickupDate: formData.pickupDate,
-
         dropOffDate: formData.dropOffDate,
-
-        // IMPORTANT FIELD NAMES
-        pickupLocation:
-          formData.pickupLocation,
-
-        dropOffLocation:
-          formData.dropOffLocation,
-
+        pickupLocation: formData.pickupLocation,
+        dropOffLocation: formData.dropOffLocation,
         totalPrice,
       };
 
-      console.log(bookingData);
+      const data = await createBooking(bookingData);
 
-      const data =
-        await createBooking(
-          bookingData
-        );
-
-      console.log(data);
-
-      alert(
-        "Vehicle booked successfully"
-      );
-
+      if (data.success) {
+        alert("Vehicle booked successfully");
+        setFormData({
+          pickupDate: "",
+          dropOffDate: "",
+          pickupLocation: "",
+          dropOffLocation: "",
+        });
+      } else {
+        alert(data.message || "Booking failed");
+      }
     } catch (error) {
-
       console.log(error);
-
-      alert("Booking failed");
-
+      const message = error.response?.data?.message || "Booking failed";
+      alert(message);
     } finally {
-
       setLoading(false);
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="border p-5 rounded mt-10 space-y-4"
-    >
+    <form onSubmit={handleSubmit} className="space-y-3.5">
 
-      <h2 className="text-2xl font-bold">
-        Book This Vehicle
-      </h2>
+      <div>
+        <label className="block text-gray-400 text-[10px] uppercase tracking-wider mb-1.5 font-medium">
+          Pickup Date
+        </label>
+        <input
+          type="date"
+          name="pickupDate"
+          value={formData.pickupDate}
+          onChange={handleChange}
+          min={new Date().toISOString().split("T")[0]}
+          className="w-full bg-white/10 border border-white/20 text-white rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-lime-400 transition placeholder:text-gray-500"
+          required
+        />
+      </div>
 
-      {/* PICKUP DATE */}
-      <input
-        type="date"
-        name="pickupDate"
-        onChange={handleChange}
-        className="border p-3 w-full rounded"
-      />
+      <div>
+        <label className="block text-gray-400 text-[10px] uppercase tracking-wider mb-1.5 font-medium">
+          Drop Off Date
+        </label>
+        <input
+          type="date"
+          name="dropOffDate"
+          value={formData.dropOffDate}
+          onChange={handleChange}
+          min={formData.pickupDate || new Date().toISOString().split("T")[0]}
+          className="w-full bg-white/10 border border-white/20 text-white rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-lime-400 transition placeholder:text-gray-500"
+          required
+        />
+      </div>
 
-      {/* DROP DATE */}
-      <input
-        type="date"
-        name="dropOffDate"
-        onChange={handleChange}
-        className="border p-3 w-full rounded"
-      />
+      <div>
+        <label className="block text-gray-400 text-[10px] uppercase tracking-wider mb-1.5 font-medium">
+          Pickup Location
+        </label>
+        <input
+          type="text"
+          name="pickupLocation"
+          placeholder="Enter pickup address"
+          value={formData.pickupLocation}
+          onChange={handleChange}
+          className="w-full bg-white/10 border border-white/20 text-white rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-lime-400 transition placeholder:text-gray-500"
+          required
+        />
+      </div>
 
-      {/* PICKUP LOCATION */}
-      <input
-        type="text"
-        name="pickupLocation"
-        placeholder="Pickup Location"
-        onChange={handleChange}
-        className="border p-3 w-full rounded"
-      />
-
-      {/* DROP LOCATION */}
-      <input
-        type="text"
-        name="dropOffLocation"
-        placeholder="Drop Location"
-        onChange={handleChange}
-        className="border p-3 w-full rounded"
-      />
+      <div>
+        <label className="block text-gray-400 text-[10px] uppercase tracking-wider mb-1.5 font-medium">
+          Drop Off Location
+        </label>
+        <input
+          type="text"
+          name="dropOffLocation"
+          placeholder="Enter drop address"
+          value={formData.dropOffLocation}
+          onChange={handleChange}
+          className="w-full bg-white/10 border border-white/20 text-white rounded-xl px-3.5 py-2.5 text-sm outline-none focus:ring-2 focus:ring-lime-400 transition placeholder:text-gray-500"
+          required
+        />
+      </div>
 
       <button
-        className="bg-black text-white px-6 py-3 rounded"
+        type="submit"
+        disabled={loading}
+        className="w-full bg-lime-400 hover:bg-lime-300 disabled:bg-lime-600 text-black py-3 rounded-xl text-sm font-bold transition-all duration-300 mt-2"
       >
-        {
-          loading
-            ? "Booking..."
-            : "Book Now"
-        }
+        {loading ? "Booking..." : "Book Now"}
       </button>
 
     </form>

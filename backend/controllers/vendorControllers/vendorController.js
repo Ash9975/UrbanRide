@@ -3,10 +3,7 @@ import bcryptjs from "bcryptjs";
 import Jwt from "jsonwebtoken";
 import { errorHandler } from "../../utils/error.js";
 
-
-const expireDate = new Date(Date.now() + 3600000);
 export const vendorSignup = async (req, res, next) => {
-  console.log(req.body);
   const {
     username, email, password, phoneNumber, address,
     businessName, drivingLicense, gstNumber, vehicleCount,
@@ -14,7 +11,6 @@ export const vendorSignup = async (req, res, next) => {
 
   try {
 
-    // validation
     if (
       !username ||
       !email ||
@@ -28,10 +24,9 @@ export const vendorSignup = async (req, res, next) => {
       );
     }
 
-    // existing user check
     const existingUser =
       await User.findOne({
-        email,
+        email: email.toLowerCase(),
       });
 
     if (existingUser) {
@@ -59,9 +54,8 @@ export const vendorSignup = async (req, res, next) => {
         password: hashedPassword,
         phoneNumber,
         address,
-        isVendor: true,
-        isUser: false,
-        businessName, drivingLicense, gstNumber, vehicleCount,
+        role: "vendor",
+        businessName, drivingLicense, gstNumber, vehicleCount: vehicleCount || 0,
       });
 
     await user.save();
@@ -83,9 +77,12 @@ export const vendorSignin = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await User.findOne({
+      email: email.toLowerCase(),
+      role: "vendor",
+    });
 
-    if (!user || !user.isVendor) {
+    if (!user) {
       return next(errorHandler(404, "Vendor not found"));
     }
 
@@ -97,8 +94,6 @@ export const vendorSignin = async (req, res, next) => {
     const accessToken = Jwt.sign(
       {
         id: user._id,
-        isVendor: user.isVendor,
-        isUser: user.isUser,
       },
       process.env.ACCESS_TOKEN,
       { expiresIn: "15m" }
@@ -107,8 +102,6 @@ export const vendorSignin = async (req, res, next) => {
     const refreshToken = Jwt.sign(
       {
         id: user._id,
-        isVendor: user.isVendor,
-        isUser: user.isUser,
       },
       process.env.REFRESH_TOKEN,
       { expiresIn: "7d" }
@@ -137,7 +130,7 @@ export const vendorSignin = async (req, res, next) => {
 
 export const vendorSignout = async (req, res, next) => {
   try {
-    await User.findByIdAndUpdate(req.user, {
+    await User.findByIdAndUpdate(req.user.id, {
       $unset: { refreshToken: "" },
     });
 
@@ -151,7 +144,7 @@ export const vendorGoogle = async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
 
-    if (user && !user.isVendor) {
+    if (user && user.role !== "vendor") {
       return next(errorHandler(409, "Email already used as user"));
     }
 
@@ -169,8 +162,7 @@ export const vendorGoogle = async (req, res, next) => {
           Math.random().toString(36).slice(-8),
         email: req.body.email.toLowerCase(),
         password: hashedPassword,
-        isVendor: true,
-        isUser: false,
+        role: "vendor",
       });
 
       await user.save();

@@ -3,8 +3,6 @@ import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import Jwt from "jsonwebtoken";
 
-const expireDate = new Date(Date.now() + 3600000);
-
 export const signUp = async (
   req,
   res,
@@ -29,7 +27,6 @@ export const signUp = async (
 
   try {
 
-    // CHECK EXISTING USER
     const existingUser =
       await User.findOne({ email });
 
@@ -43,11 +40,9 @@ export const signUp = async (
       );
     }
 
-    // HASH PASSWORD
     const hashedPassword =
       bcryptjs.hashSync(password, 10);
 
-    // VENDOR VALIDATION
     if (role === "vendor") {
 
       if (
@@ -65,7 +60,6 @@ export const signUp = async (
       }
     }
 
-    // CREATE USER
     const newUser = new User({
 
       username,
@@ -75,11 +69,8 @@ export const signUp = async (
       phoneNumber,
       address,
 
-      // ROLES
-      isUser: role === "user",
-      isVendor: role === "vendor",
+      role: role === "vendor" ? "vendor" : "user",
 
-      // VENDOR DATA
       businessName:
         role === "vendor"
           ? businessName
@@ -164,7 +155,7 @@ export const signIn =
         await User.findOne({
           email:
             email.toLowerCase(),
-          isUser: true,
+          role: "user",
         });
 
       if (!user) {
@@ -215,7 +206,6 @@ export const signIn =
           }
         );
 
-      // fixed validation issue
       await User.findByIdAndUpdate(
         user._id,
         {
@@ -246,7 +236,7 @@ export const google = async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
 
-    if (user && !user.isUser) {
+    if (user && user.role !== "user") {
       return next(
         errorHandler(
           409,
@@ -269,8 +259,7 @@ export const google = async (req, res, next) => {
           Math.random().toString(36).slice(-8),
         email: req.body.email,
         password: hashedPassword,
-        isUser: true,
-        isVendor: false,
+        role: "user",
       });
 
       await user.save();

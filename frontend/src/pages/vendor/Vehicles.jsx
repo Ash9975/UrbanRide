@@ -15,259 +15,117 @@ const Vehicles = () => {
   const [loading, setLoading] =
     useState(true);
 
-  // FETCH VEHICLES
   useEffect(() => {
-
     fetchVehicles();
-
   }, []);
 
   const fetchVehicles =
     async () => {
-
       try {
-
-        const data =
-          await getVendorVehicles();
-
+        const data = await getVendorVehicles();
         setVehicles(data);
-
       } catch (error) {
-
         console.log(error);
-
       } finally {
-
         setLoading(false);
       }
     };
 
-  // DELETE VEHICLE
   const handleDelete =
     async (id) => {
-
       try {
-
         await deleteVehicle(id);
-
-        setVehicles(
-          vehicles.filter(
-            (vehicle) =>
-              vehicle._id !== id
-          )
-        );
-
+        setVehicles(vehicles.filter((vehicle) => vehicle._id !== id));
       } catch (error) {
-
         console.log(error);
       }
     };
 
-  // COUNTS
   const approvedVehicles =
-    vehicles.filter(
-      (v) =>
-        v.isAdminApproved
-    ).length;
+    vehicles.filter((v) => v.isAdminApproved).length;
 
   const pendingVehicles =
-    vehicles.filter(
-      (v) =>
-        !v.isAdminApproved &&
-        !v.isRejected
-    ).length;
+    vehicles.filter((v) => !v.isAdminApproved && !v.isRejected).length;
 
   const rejectedVehicles =
-    vehicles.filter(
-      (v) =>
-        v.isRejected
-    ).length;
+    vehicles.filter((v) => v.isRejected).length;
 
   return (
 
-    <div className="min-h-screen bg-[#f3f3f5] p-6">
+    <div className="space-y-6">
 
       {/* HERO */}
-      <div className="relative overflow-hidden bg-black rounded-[40px] p-10 md:p-14 mb-10 shadow-2xl">
-
-        {/* GLOW */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-lime-400/20 rounded-full blur-3xl" />
+      <div className="relative overflow-hidden bg-black rounded-2xl p-6 md:p-8 shadow-xl">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-lime-400/15 rounded-full blur-3xl" />
 
         <div className="relative z-10">
-
-          <p className="text-lime-400 uppercase tracking-[5px] font-semibold mb-5">
-
+          <p className="text-lime-400 uppercase tracking-[3px] text-[10px] font-semibold mb-2">
             Vendor Fleet Management
-
           </p>
-
-          <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-6">
-
-            My Luxury
-            <br />
-
-            Vehicles
-
+          <h1 className="text-2xl md:text-3xl font-black text-white leading-tight mb-3">
+            My Luxury<br />Vehicles
           </h1>
-
-          <p className="text-gray-300 text-lg max-w-2xl leading-relaxed">
-
-            Manage your listed
-            vehicles, update pricing,
-            track approvals and grow
-            your luxury rental fleet
-            with Urban Ride.
-
+          <p className="text-gray-300 text-sm max-w-lg leading-relaxed">
+            Manage your listed vehicles, update pricing, track approvals and grow your luxury rental fleet with Urban Ride.
           </p>
-
         </div>
-
       </div>
 
       {/* STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-        {/* APPROVED */}
-        <div className="bg-white rounded-[30px] p-7 shadow-sm">
-
-          <p className="text-gray-500 mb-3 text-lg">
-
-            Approved Vehicles
-
-          </p>
-
-          <h2 className="text-6xl font-black text-green-500">
-
-            {approvedVehicles}
-
-          </h2>
-
+        <div className="bg-white rounded-xl p-5 shadow-sm">
+          <p className="text-gray-400 text-[10px] uppercase tracking-wider mb-1">Approved Vehicles</p>
+          <h2 className="text-3xl font-black text-green-500">{approvedVehicles}</h2>
         </div>
 
-        {/* PENDING */}
-        <div className="bg-lime-100 rounded-[30px] p-7 shadow-sm">
-
-          <p className="text-gray-700 mb-3 text-lg">
-
-            Pending Approval
-
-          </p>
-
-          <h2 className="text-6xl font-black">
-
-            {pendingVehicles}
-
-          </h2>
-
+        <div className="bg-lime-100 rounded-xl p-5 shadow-sm">
+          <p className="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Pending Approval</p>
+          <h2 className="text-3xl font-black">{pendingVehicles}</h2>
         </div>
 
-        {/* REJECTED */}
-        <div className="bg-black text-white rounded-[30px] p-7 shadow-sm">
-
-          <p className="text-gray-300 mb-3 text-lg">
-
-            Rejected Vehicles
-
-          </p>
-
-          <h2 className="text-6xl font-black text-red-400">
-
-            {rejectedVehicles}
-
-          </h2>
-
+        <div className="bg-black text-white rounded-xl p-5 shadow-sm">
+          <p className="text-gray-400 text-[10px] uppercase tracking-wider mb-1">Rejected Vehicles</p>
+          <h2 className="text-3xl font-black text-red-400">{rejectedVehicles}</h2>
         </div>
 
       </div>
 
-      {/* LOADING */}
-      {
-        loading && (
+      {loading && (
+        <div className="bg-white rounded-2xl p-10 text-center shadow-sm">
+          <h2 className="text-base font-black mb-1">Loading Vehicles...</h2>
+          <p className="text-gray-500 text-sm">Fetching your luxury fleet details.</p>
+        </div>
+      )}
 
-          <div className="bg-white rounded-[40px] p-16 text-center shadow-sm">
-
-            <h2 className="text-4xl font-black mb-4">
-
-              Loading Vehicles...
-
-            </h2>
-
-            <p className="text-gray-500">
-
-              Fetching your luxury
-              fleet details.
-
+      {!loading && vehicles.length === 0 && (
+        <div className="bg-white rounded-2xl p-10 text-center shadow-sm">
+          <div className="max-w-sm mx-auto">
+            <h2 className="text-lg font-black mb-3">No Vehicles Added</h2>
+            <p className="text-gray-500 text-sm leading-relaxed mb-5">
+              Start growing your rental business by adding your first luxury vehicle to the Urban Ride platform.
             </p>
-
+            <a
+              href="/vendor/add-vehicle"
+              className="inline-flex bg-black hover:bg-gray-900 text-white px-6 py-3 rounded-xl text-sm font-semibold transition"
+            >
+              Add Vehicle
+            </a>
           </div>
-        )
-      }
+        </div>
+      )}
 
-      {/* EMPTY STATE */}
-      {
-        !loading &&
-        vehicles.length === 0 && (
-
-          <div className="bg-white rounded-[40px] p-16 text-center shadow-sm">
-
-            <div className="max-w-2xl mx-auto">
-
-              <h2 className="text-5xl font-black mb-6">
-
-                No Vehicles Added
-
-              </h2>
-
-              <p className="text-gray-500 text-lg leading-relaxed mb-8">
-
-                Start growing your
-                rental business by
-                adding your first
-                luxury vehicle to the
-                Urban Ride platform.
-
-              </p>
-
-              <a
-                href="/vendor/add-vehicle"
-                className="inline-flex bg-black hover:bg-gray-900 text-white px-8 py-4 rounded-2xl font-semibold transition"
-              >
-
-                Add Vehicle
-
-              </a>
-
-            </div>
-
-          </div>
-        )
-      }
-
-      {/* VEHICLES GRID */}
-      {
-        !loading &&
-        vehicles.length > 0 && (
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-            {vehicles.map(
-              (vehicle) => (
-
-                <VendorVehicleCard
-                  key={
-                    vehicle._id
-                  }
-                  vehicle={vehicle}
-                  onDelete={
-                    handleDelete
-                  }
-                />
-              )
-            )}
-
-          </div>
-        )
-      }
+      {!loading && vehicles.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {vehicles.map((vehicle) => (
+            <VendorVehicleCard
+              key={vehicle._id}
+              vehicle={vehicle}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      )}
 
     </div>
   );

@@ -3,12 +3,13 @@ import Vehicle from "../../models/vehicleModel.js";
 
 import { errorHandler } from "../../utils/error.js";
 
+const ALLOWED_STATUSES = ["pending", "approved", "rejected", "completed"];
+
 export const vendorBookings =
   async (req, res, next) => {
 
     try {
 
-      // ✅ SAFETY CHECK
       if (!req.user) {
 
         return next(
@@ -21,27 +22,23 @@ export const vendorBookings =
 
       const vendorId = req.user.id;
 
-      // ✅ GET ALL VENDOR VEHICLES
       const vehicles =
         await Vehicle.find({
           addedBy: vendorId,
           isDeleted: false,
         }).select("_id");
 
-      // ✅ IF NO VEHICLES
       if (!vehicles.length) {
 
         return res.status(200).json([]);
       }
 
-      // ✅ EXTRACT IDS
       const vehicleIds =
         vehicles.map(
           (vehicle) =>
             vehicle._id
         );
 
-      // ✅ GET BOOKINGS
       const bookings =
         await Booking.find({
           vehicleId: {
@@ -62,7 +59,6 @@ export const vendorBookings =
             createdAt: -1,
           });
 
-      // ✅ ALWAYS RETURN ARRAY
       res.status(200).json(
         bookings || []
       );
@@ -92,12 +88,34 @@ export const vendorBookings =
       const { status } =
         req.body;
 
-      const booking =
-        await Booking.findByIdAndUpdate(
-          req.params.id,
-          { status },
-          { new: true }
+      if (!ALLOWED_STATUSES.includes(status)) {
+        return next(
+          errorHandler(
+            400,
+            `Invalid status. Allowed: ${ALLOWED_STATUSES.join(", ")}`
+          )
         );
+      }
+
+      const booking =
+        await Booking.findById(req.params.id);
+
+      if (!booking) {
+        return next(
+          errorHandler(404, "Booking not found")
+        );
+      }
+
+      // Verify the booking belongs to a vehicle owned by this vendor
+      const vehicle = await Vehicle.findById(booking.vehicleId);
+      if (!vehicle || vehicle.addedBy.toString() !== req.user.id) {
+        return next(
+          errorHandler(403, "Not authorized to update this booking")
+        );
+      }
+
+      booking.status = status;
+      await booking.save();
 
       res.status(200).json(
         booking

@@ -26,8 +26,12 @@ export const searchVehicles = async (
   location
 ) => {
 
+  const params = new URLSearchParams();
+  if (district) params.append("district", district);
+  if (location) params.append("location", location);
+
   const response = await api.get(
-    `/user/vehicles/search?district=${district}&location=${location}`
+    `/user/vehicles/search?${params.toString()}`
   );
 
   return response.data;

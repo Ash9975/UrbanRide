@@ -15,25 +15,22 @@ const VendorBookingCard = ({
     booking.status || "pending"
   );
 
+  const [updating, setUpdating] = useState(false);
+
   const handleStatusUpdate =
     async (status) => {
-
       try {
-
-        await updateBookingStatus(
-          booking._id,
-          status
-        );
-
+        setUpdating(true);
+        await updateBookingStatus(booking._id, status);
         setCurrentStatus(status);
-
       } catch (error) {
-
         console.log(error);
+        alert("Failed to update status");
+      } finally {
+        setUpdating(false);
       }
     };
 
-  // STATUS COLORS
   const statusColor =
     currentStatus === "approved"
       ? "bg-green-500"
@@ -45,268 +42,106 @@ const VendorBookingCard = ({
 
   return (
 
-    <div className="bg-white rounded-[35px] overflow-hidden shadow-sm border border-gray-100">
+    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
 
-      {/* TOP IMAGE */}
-      <div className="relative h-72">
-
+      <div className="relative h-48">
         <img
-          src={
-            booking.vehicleId
-              ?.images?.[0]
-          }
-          alt={
-            booking.vehicleId
-              ?.title
-          }
+          src={booking.vehicleId?.images?.[0] || "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=400&auto=format&fit=crop"}
+          alt={booking.vehicleId?.title}
           className="w-full h-full object-cover"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 
-        <div className="absolute inset-0 bg-black/20" />
-
-        {/* STATUS BADGE */}
-        <div className="absolute top-5 right-5">
-
-          <span
-            className={`${statusColor} text-white px-5 py-2 rounded-full text-sm font-semibold capitalize shadow-lg`}
-          >
-
+        <div className="absolute top-3 right-3">
+          <span className={`${statusColor} text-white px-3 py-1 rounded-lg text-[10px] font-semibold capitalize shadow-lg`}>
             {currentStatus}
-
           </span>
-
         </div>
 
-        {/* VEHICLE INFO */}
-        <div className="absolute bottom-6 left-6 text-white">
-
-          <h2 className="text-4xl font-black mb-2">
-
-            {
-              booking.vehicleId
-                ?.title
-            }
-
-          </h2>
-
-          <p className="text-lg text-gray-200">
-
-            {
-              booking.vehicleId
-                ?.location
-            }
-
-          </p>
-
+        <div className="absolute bottom-3 left-3 text-white">
+          <h2 className="text-lg font-bold mb-0.5">{booking.vehicleId?.title || "Vehicle"}</h2>
+          <p className="text-xs text-gray-200">{booking.vehicleId?.location}</p>
         </div>
-
       </div>
 
-      {/* CONTENT */}
-      <div className="p-8">
+      <div className="p-5">
 
-        {/* USER DETAILS */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-
-          <div className="bg-[#f5f5f7] p-5 rounded-3xl">
-
-            <p className="text-gray-500 text-sm mb-2">
-
-              Customer Name
-
-            </p>
-
-            <h3 className="text-2xl font-bold">
-
-              {
-                booking.userId
-                  ?.username
-              }
-
-            </h3>
-
+        <div className="grid sm:grid-cols-2 gap-3 mb-5">
+          <div className="bg-[#f5f5f7] p-3 rounded-xl">
+            <p className="text-gray-400 text-[10px] uppercase tracking-wider mb-0.5">Customer Name</p>
+            <h3 className="text-sm font-bold">{booking.userId?.username || "N/A"}</h3>
           </div>
-
-          <div className="bg-[#f5f5f7] p-5 rounded-3xl">
-
-            <p className="text-gray-500 text-sm mb-2">
-
-              Email Address
-
-            </p>
-
-            <h3 className="text-xl font-semibold break-all">
-
-              {
-                booking.userId
-                  ?.email
-              }
-
-            </h3>
-
+          <div className="bg-[#f5f5f7] p-3 rounded-xl">
+            <p className="text-gray-400 text-[10px] uppercase tracking-wider mb-0.5">Email Address</p>
+            <h3 className="text-xs font-semibold break-all">{booking.userId?.email || "N/A"}</h3>
           </div>
-
         </div>
 
-        {/* BOOKING DETAILS */}
-        <div className="grid md:grid-cols-3 gap-5 mb-8">
-
-          <div className="bg-lime-50 p-5 rounded-3xl">
-
-            <p className="text-gray-500 text-sm mb-2">
-
-              Pickup Date
-
-            </p>
-
-            <h3 className="text-xl font-bold">
-
-              {
-                booking.pickupDate
-                  ?.slice(0, 10)
-              }
-
+        <div className="grid grid-cols-3 gap-3 mb-5">
+          <div className="bg-lime-50 p-3 rounded-xl">
+            <p className="text-gray-400 text-[10px] uppercase tracking-wider mb-0.5">Pickup Date</p>
+            <h3 className="text-xs font-bold">
+              {booking.pickupDate ? new Date(booking.pickupDate).toLocaleDateString() : "N/A"}
             </h3>
-
           </div>
-
-          <div className="bg-[#f5f5f7] p-5 rounded-3xl">
-
-            <p className="text-gray-500 text-sm mb-2">
-
-              Dropoff Date
-
-            </p>
-
-            <h3 className="text-xl font-bold">
-
-              {
-                booking.dropOffDate
-                  ?.slice(0, 10)
-              }
-
+          <div className="bg-[#f5f5f7] p-3 rounded-xl">
+            <p className="text-gray-400 text-[10px] uppercase tracking-wider mb-0.5">Dropoff Date</p>
+            <h3 className="text-xs font-bold">
+              {booking.dropOffDate ? new Date(booking.dropOffDate).toLocaleDateString() : "N/A"}
             </h3>
-
           </div>
-
-          <div className="bg-black text-white p-5 rounded-3xl">
-
-            <p className="text-gray-300 text-sm mb-2">
-
-              Total Revenue
-
-            </p>
-
-            <h3 className="text-3xl font-black">
-
-              ₹
-              {
-                booking.totalPrice
-              }
-
-            </h3>
-
+          <div className="bg-black text-white p-3 rounded-xl">
+            <p className="text-gray-400 text-[10px] uppercase tracking-wider mb-0.5">Total Revenue</p>
+            <h3 className="text-sm font-black">₹{booking.totalPrice}</h3>
           </div>
-
         </div>
 
-        {/* ACTIONS */}
-        <div className="mt-6">
+        <div>
+          {currentStatus === "pending" && (
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => handleStatusUpdate("approved")}
+                disabled={updating}
+                className="bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition"
+              >
+                {updating ? "Updating..." : "Approve Booking"}
+              </button>
+              <button
+                onClick={() => handleStatusUpdate("rejected")}
+                disabled={updating}
+                className="bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition"
+              >
+                {updating ? "Updating..." : "Reject Booking"}
+              </button>
+            </div>
+          )}
 
-          {/* PENDING */}
-          {
-            currentStatus ===
-            "pending" && (
-
-              <div className="flex flex-wrap gap-4">
-
-                <button
-                  onClick={() =>
-                    handleStatusUpdate(
-                      "approved"
-                    )
-                  }
-                  className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-2xl font-semibold transition"
-                >
-
-                  Approve Booking
-
-                </button>
-
-                <button
-                  onClick={() =>
-                    handleStatusUpdate(
-                      "rejected"
-                    )
-                  }
-                  className="bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-2xl font-semibold transition"
-                >
-
-                  Reject Booking
-
-                </button>
-
+          {currentStatus === "approved" && (
+            <div className="space-y-3">
+              <div className="bg-green-50 border border-green-200 text-green-700 p-3 rounded-xl text-sm">
+                Booking approved successfully. Customer can now use the vehicle.
               </div>
-            )
-          }
+              <button
+                onClick={() => handleStatusUpdate("completed")}
+                disabled={updating}
+                className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition"
+              >
+                {updating ? "Updating..." : "Mark as Completed"}
+              </button>
+            </div>
+          )}
 
-          {/* APPROVED */}
-          {
-            currentStatus ===
-            "approved" && (
+          {currentStatus === "completed" && (
+            <div className="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded-xl text-sm font-medium">
+              Ride completed successfully.
+            </div>
+          )}
 
-              <div className="space-y-5">
-
-                <div className="bg-green-50 border border-green-200 text-green-700 p-5 rounded-3xl">
-
-                  Booking approved successfully.
-                  Customer can now use the vehicle.
-
-                </div>
-
-                <button
-                  onClick={() =>
-                    handleStatusUpdate(
-                      "completed"
-                    )
-                  }
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-2xl font-semibold transition"
-                >
-
-                  Mark as Completed
-
-                </button>
-
-              </div>
-            )
-          }
-
-          {/* COMPLETED */}
-          {
-            currentStatus ===
-            "completed" && (
-
-              <div className="bg-blue-50 border border-blue-200 text-blue-700 p-5 rounded-3xl font-medium">
-
-                Ride completed successfully.
-
-              </div>
-            )
-          }
-
-          {/* REJECTED */}
-          {
-            currentStatus ===
-            "rejected" && (
-
-              <div className="bg-red-50 border border-red-200 text-red-700 p-5 rounded-3xl font-medium">
-
-                Booking rejected by vendor.
-
-              </div>
-            )
-          }
-
+          {currentStatus === "rejected" && (
+            <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl text-sm font-medium">
+              Booking rejected by vendor.
+            </div>
+          )}
         </div>
 
       </div>

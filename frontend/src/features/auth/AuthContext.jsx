@@ -24,7 +24,6 @@ export const AuthProvider = ({
       const storedUser =
         localStorage.getItem("user");
 
-      // USER EXISTS
       if (
         token &&
         storedUser &&
@@ -38,7 +37,6 @@ export const AuthProvider = ({
 
       } else {
 
-        // ONLY SET NULL
         setUser(null);
       }
 
@@ -53,28 +51,35 @@ export const AuthProvider = ({
     }
 
   }, []);
-  // LOGIN
+
+  // LOGIN - backend returns { success, user, accessToken, refreshToken }
   const login = (data) => {
+
+    const userData = data.user || data;
 
     const {
       accessToken,
       refreshToken,
-      ...userData
-    } = data;
+      ...userInfo
+    } = {
+      ...userData,
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken,
+    };
 
-    setUser(userData);
+    setUser(userInfo);
 
     localStorage.setItem(
       "user",
-      JSON.stringify(userData)
+      JSON.stringify(userInfo)
     );
 
     localStorage.setItem(
       "token",
-      accessToken
+      data.accessToken
     );
   };
-  
+
   // LOGOUT
   const logout = () => {
 
