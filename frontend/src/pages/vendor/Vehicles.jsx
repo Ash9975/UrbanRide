@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import VendorVehicleCard from "../../components/vendor/VendorVehicleCard";
 
@@ -105,12 +106,12 @@ const Vehicles = () => {
             <p className="text-gray-500 text-sm leading-relaxed mb-5">
               Start growing your rental business by adding your first luxury vehicle to the Urban Ride platform.
             </p>
-            <a
-              href="/vendor/add-vehicle"
+            <Link
+              to="/vendor/add-vehicle"
               className="inline-flex bg-black hover:bg-gray-900 text-white px-6 py-3 rounded-xl text-sm font-semibold transition"
             >
               Add Vehicle
-            </a>
+            </Link>
           </div>
         </div>
       )}

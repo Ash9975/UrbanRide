@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../features/auth/useAuth";
 import {
   CalendarCheck,
@@ -8,6 +9,12 @@ import {
 } from "lucide-react";
 
 export default function Home() {
+  const [bookingTab, setBookingTab] = useState("Distance");
+  const [pickup, setPickup] = useState("");
+  const [dropoff, setDropoff] = useState("");
+  const [date, setDate] = useState("");
+  const navigate = useNavigate();
+
   const fleet = [
     {
       name: "Mercedes Benz S Class",
@@ -47,6 +54,14 @@ export default function Home() {
   ];
 
   const { user } = useAuth();
+
+  const handleReserveRide = () => {
+    if (!pickup.trim()) {
+      alert("Please enter a pick up address");
+      return;
+    }
+    navigate("/vehicles");
+  };
 
   return (
     <div className="bg-[#efeff1] min-h-screen">
@@ -120,16 +135,48 @@ export default function Home() {
               <div className="bg-white/95 backdrop-blur-2xl rounded-2xl p-5 sm:p-6 w-full max-w-sm shadow-2xl border border-white/40">
 
                 <div className="grid grid-cols-3 gap-1.5 mb-5">
-                  <button className="bg-lime-400 py-2.5 rounded-lg font-semibold text-xs">Distance</button>
-                  <button className="bg-gray-100 hover:bg-gray-200 py-2.5 rounded-lg transition text-xs">Hourly</button>
-                  <button className="bg-gray-100 hover:bg-gray-200 py-2.5 rounded-lg transition text-xs">Flat Rate</button>
+                  {["Distance", "Hourly", "Flat Rate"].map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setBookingTab(tab)}
+                      className={`py-2.5 rounded-lg font-semibold text-xs transition ${
+                        bookingTab === tab
+                          ? "bg-lime-400 text-black"
+                          : "bg-gray-100 hover:bg-gray-200 text-gray-600"
+                      }`}
+                    >
+                      {tab}
+                    </button>
+                  ))}
                 </div>
 
                 <div className="space-y-3">
-                  <input type="text" placeholder="Pick Up Address" className="w-full border border-gray-200 bg-gray-100 rounded-xl px-3.5 py-3 text-sm outline-none focus:ring-2 focus:ring-lime-400 transition" />
-                  <input type="text" placeholder="Drop Off Address" className="w-full border border-gray-200 bg-gray-100 rounded-xl px-3.5 py-3 text-sm outline-none focus:ring-2 focus:ring-lime-400 transition" />
-                  <input type="date" className="w-full border border-gray-200 bg-gray-100 rounded-xl px-3.5 py-3 text-sm outline-none focus:ring-2 focus:ring-lime-400 transition" />
-                  <button className="w-full bg-black hover:bg-gray-900 text-white py-3 rounded-xl text-sm font-bold transition-all duration-300 hover:shadow-xl">
+                  <input
+                    type="text"
+                    placeholder="Pick Up Address"
+                    value={pickup}
+                    onChange={(e) => setPickup(e.target.value)}
+                    className="w-full border border-gray-200 bg-gray-100 rounded-xl px-3.5 py-3 text-sm outline-none focus:ring-2 focus:ring-lime-400 transition"
+                  />
+                  {bookingTab === "Distance" && (
+                    <input
+                      type="text"
+                      placeholder="Drop Off Address"
+                      value={dropoff}
+                      onChange={(e) => setDropoff(e.target.value)}
+                      className="w-full border border-gray-200 bg-gray-100 rounded-xl px-3.5 py-3 text-sm outline-none focus:ring-2 focus:ring-lime-400 transition"
+                    />
+                  )}
+                  <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="w-full border border-gray-200 bg-gray-100 rounded-xl px-3.5 py-3 text-sm outline-none focus:ring-2 focus:ring-lime-400 transition"
+                  />
+                  <button
+                    onClick={handleReserveRide}
+                    className="w-full bg-black hover:bg-gray-900 text-white py-3 rounded-xl text-sm font-bold transition-all duration-300 hover:shadow-xl"
+                  >
                     Reserve Your Ride
                   </button>
                 </div>
@@ -170,9 +217,12 @@ export default function Home() {
                   <p className="text-gray-500 text-xs leading-relaxed mb-3">
                     Luxury transportation with comfortable rides and premium experience.
                   </p>
-                  <button className="bg-black text-white px-4 py-1.5 rounded-lg text-xs font-semibold">
+                  <Link
+                    to="/vehicles"
+                    className="inline-block bg-black text-white px-4 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-800 transition"
+                  >
                     Read More
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
@@ -189,9 +239,9 @@ export default function Home() {
                 Browse luxury sedans, SUVs and premium business class vehicles.
               </p>
             </div>
-            <a href="/vehicles" className="bg-black text-white px-5 py-2.5 rounded-xl text-xs font-semibold">
+            <Link to="/vehicles" className="bg-black text-white px-5 py-2.5 rounded-xl text-xs font-semibold hover:bg-gray-800 transition">
               View All Vehicles
-            </a>
+            </Link>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -204,9 +254,12 @@ export default function Home() {
                     <span>4 Seats</span>
                     <span>Automatic</span>
                   </div>
-                  <button className="w-full bg-lime-400 hover:bg-lime-300 py-2 rounded-lg text-xs font-semibold transition">
+                  <Link
+                    to="/vehicles"
+                    className="block w-full bg-lime-400 hover:bg-lime-300 py-2 rounded-lg text-xs font-semibold transition text-center"
+                  >
                     Book Now
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
@@ -262,9 +315,12 @@ export default function Home() {
                 <li className="flex items-center gap-2"><span className="text-lime-500">✔</span> Professional Driver</li>
                 <li className="flex items-center gap-2"><span className="text-lime-500">✔</span> Business Class Experience</li>
               </ul>
-              <button className="bg-black text-white px-6 py-3 rounded-xl text-sm font-semibold">
+              <Link
+                to="/vehicles"
+                className="inline-block bg-black text-white px-6 py-3 rounded-xl text-sm font-semibold hover:bg-gray-800 transition"
+              >
                 Reserve Now
-              </button>
+              </Link>
             </div>
             <div>
               <img

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import VehicleForm from "../../components/vendor/VehicleForm";
 
@@ -8,8 +9,26 @@ import {
 
 const AddVehicle = () => {
 
+  const navigate = useNavigate();
+
   const [formData, setFormData] =
-    useState({});
+    useState({
+      title: "",
+      company: "",
+      model: "",
+      year: "",
+      registrationNumber: "",
+      price: "",
+      basePackage: "",
+      fuelType: "",
+      transmission: "",
+      seats: "",
+      carType: "",
+      district: "",
+      location: "",
+      description: "",
+      images: null,
+    });
 
   const [loading, setLoading] =
     useState(false);
@@ -39,25 +58,26 @@ const AddVehicle = () => {
         const vehicleData = new FormData();
 
         Object.keys(formData).forEach((key) => {
-          if (key !== "images") {
+          if (key === "images") {
+            if (formData.images) {
+              for (let i = 0; i < formData.images.length; i++) {
+                vehicleData.append("images", formData.images[i]);
+              }
+            }
+          } else if (formData[key] !== "" && formData[key] !== null) {
             vehicleData.append(key, formData[key]);
           }
         });
 
-        if (formData.images) {
-          for (let i = 0; i < formData.images.length; i++) {
-            vehicleData.append("images", formData.images[i]);
-          }
-        }
-
         const data = await addVehicle(vehicleData);
         console.log(data);
-        alert("Vehicle added successfully");
-        setFormData({});
+        alert("Vehicle added successfully! It will be listed after admin approval.");
+        navigate("/vendor/vehicles");
 
       } catch (error) {
         console.log(error);
-        alert("Failed to add vehicle");
+        const message = error.response?.data?.message || "Failed to add vehicle";
+        alert(message);
       } finally {
         setLoading(false);
       }
